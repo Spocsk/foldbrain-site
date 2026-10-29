@@ -1,0 +1,49 @@
+<!doctype html>
+<!-- Gabarit : ne pas éditer les pages générées, mais ce fichier et i18n/*.json, puis lancer tools/build.py. -->
+<html lang="{{lang}}" dir="{{dir}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{t.privacy_meta_title}}</title>
+<meta name="description" content="{{t.privacy_meta_description}}">
+<meta name="theme-color" content="#FBF6EA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1F2925" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="{{canonical}}">
+{{alternates}}
+<link rel="icon" href="{{root}}img/icon-1024.png">
+<link rel="apple-touch-icon" href="{{root}}img/icon-1024.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
+<link rel="stylesheet" href="{{root}}css/tokens.css">
+<link rel="stylesheet" href="{{root}}css/site.css">
+</head>
+<body>
+<header class="wrap nav">
+  <a class="brand" href="./"><img src="{{root}}img/icon-1024.png" alt="" width="36" height="36">Fold Brain</a>
+  <nav class="nav-links" aria-label="{{t.nav_label}}">
+    <a href="./">{{t.privacy_home}}</a>
+  </nav>
+</header>
+
+<!-- Même texte que PrivacyPolicyView dans l'app : les tenir à jour ensemble. -->
+<main class="wrap doc">
+  <div style="display:grid;gap:10px">
+    <div class="eyebrow">{{t.privacy}}</div>
+    <h1>{{t.privacy_title}}</h1>
+    <p class="fine">{{t.privacy_updated}}</p>
+  </div>
+  <section><h2>{{t.p_brief_h}}</h2><p>{{t.p_brief}}</p></section>
+  <section><h2>{{t.p_device_h}}</h2><p>{{t.p_device}}</p></section>
+  <section><h2>{{t.p_hand_h}}</h2><p>{{t.p_hand}}</p></section>
+  <section><h2>{{t.p_purchase_h}}</h2><p>{{t.p_purchase}}</p></section>
+  <section><h2>{{t.p_notif_h}}</h2><p>{{t.p_notif}}</p></section>
+  <section><h2>{{t.p_kids_h}}</h2><p>{{t.p_kids}}</p></section>
+  <section><h2>{{t.p_site_h}}</h2><p>{{t.p_site}}</p></section>
+  <section><h2>{{t.p_changes_h}}</h2><p>{{t.p_changes}}</p></section>
+  <section><h2>{{t.p_contact_h}}</h2><p>{{t.p_contact}}</p></section>
+</main>
+
+{{footer}}
+</body>
+</html>

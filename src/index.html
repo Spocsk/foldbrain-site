@@ -1,0 +1,282 @@
+<!doctype html>
+<!-- Gabarit : ne pas éditer les pages générées, mais ce fichier et i18n/*.json, puis lancer tools/build.py. -->
+<html lang="{{lang}}" dir="{{dir}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{t.meta_title}}</title>
+<meta name="description" content="{{t.meta_description}}">
+<meta name="theme-color" content="#FBF6EA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1F2925" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="{{t.og_title}}">
+<meta property="og:description" content="{{t.og_description}}">
+<meta property="og:image" content="https://spocsk.github.io/foldbrain-site/img/icon-1024.png">
+<meta property="og:url" content="{{canonical}}">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="{{og_locale}}">
+<link rel="canonical" href="{{canonical}}">
+{{alternates}}
+<link rel="icon" href="{{root}}img/icon-1024.png">
+<link rel="apple-touch-icon" href="{{root}}img/icon-1024.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
+<link rel="stylesheet" href="{{root}}css/tokens.css">
+<link rel="stylesheet" href="{{root}}css/site.css">
+{{redirect}}
+<script type="importmap">
+{
+  "imports": { "three": "https://unpkg.com/three@0.184.0/build/three.module.js" },
+  "integrity": {
+    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
+    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT"
+  }
+}
+</script>
+<script type="application/json" id="i18n">{{script_json}}</script>
+<script type="module" src="{{root}}plio/plio-3d.js"></script>
+<script type="module" src="{{root}}js/site.js"></script>
+</head>
+<body>
+<a class="skip" href="#contenu">{{t.skip}}</a>
+
+<header class="wrap nav">
+  <a class="brand" href="./"><img src="{{root}}img/icon-1024.png" alt="" width="36" height="36">Fold Brain</a>
+  <nav class="nav-links" aria-label="{{t.nav_label}}">
+    <a href="#comment">{{t.nav_how}}</a>
+    <a href="#prix">{{t.nav_price}}</a>
+    <a class="btn btn--small" data-store data-cheer href="#prix">{{t.nav_download}}</a>
+  </nav>
+</header>
+
+<main id="contenu">
+
+<section class="wrap hero">
+  <div class="hero-copy">
+    <div class="eyebrow">{{t.hero_eyebrow}}</div>
+    <h1>{{t.hero_title}}</h1>
+    <p>{{t.hero_text}}</p>
+    <div class="cta-row">
+      <a class="btn" data-store data-cheer href="#prix">{{t.cta_download}}</a>
+      <span class="cta-note">{{t.cta_note}}</span>
+    </div>
+  </div>
+  <div class="hero-stage">
+    <div class="hero-disc" aria-hidden="true"></div>
+    <div class="bubble" id="bubble" aria-live="polite">{{t.plio_hello}}</div>
+    <plio-3d id="hero-plio" mood="content" size="360" follow anim="joie" title="{{t.plio_click}}"></plio-3d>
+  </div>
+</section>
+
+<section id="comment" class="band">
+  <div class="wrap section how">
+    <div class="device-col">
+      <div class="tabs" role="tablist" aria-label="{{t.tabs_label}}">
+        <button class="tab" role="tab" id="tab-duo" aria-controls="mock-duo" aria-selected="true" data-device="duo">iPhone Duo</button>
+        <button class="tab" role="tab" id="tab-phone" aria-controls="mock-phone" aria-selected="false" tabindex="-1" data-device="phone">iPhone</button>
+        <button class="tab" role="tab" id="tab-pad" aria-controls="mock-pad" aria-selected="false" tabindex="-1" data-device="pad">iPad</button>
+      </div>
+
+      <div class="mock mock--duo" id="mock-duo" role="tabpanel" aria-labelledby="tab-duo" dir="ltr">
+        <div class="mock-scale">
+          <div class="mock-btn" style="top:-3px;right:140px;width:84px;height:5px;border-radius:3px 3px 0 0"></div>
+          <div class="mock-btn" style="left:-3px;top:150px;width:5px;height:56px;border-radius:3px 0 0 3px"></div>
+          <div class="mock-btn" style="left:-3px;top:218px;width:5px;height:56px;border-radius:3px 0 0 3px"></div>
+          <div class="mock-bezel">
+            <div class="mock-screen" role="img" aria-label="{{t.mock_duo_label}}">
+              <div class="mock-status"><span>9:41</span></div>
+              <div class="mock-top">
+                <div class="mock-row"><span class="eyebrow">{{t.mock_calc}} · 3/20</span><span class="mock-timer">1:42</span></div>
+                <div class="mock-problem">37 + 48</div>
+                <div class="mock-progress"><div></div></div>
+              </div>
+              <div class="fold-crease"></div>
+              <div class="mock-answer">
+                <div class="slate"><span>85</span></div>
+                <div class="mock-keys"><div class="mock-key">{{t.mock_clear}}</div><div class="mock-key mock-key--go">{{t.mock_check}}</div></div>
+              </div>
+              <div class="mock-home"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mock mock--phone" id="mock-phone" role="tabpanel" aria-labelledby="tab-phone" dir="ltr" hidden>
+        <div class="mock-scale">
+          <div class="mock-btn" style="left:-3px;top:180px;width:5px;height:64px;border-radius:3px 0 0 3px"></div>
+          <div class="mock-btn" style="left:-3px;top:260px;width:5px;height:64px;border-radius:3px 0 0 3px"></div>
+          <div class="mock-btn" style="right:-3px;top:220px;width:5px;height:100px;border-radius:0 3px 3px 0"></div>
+          <div class="mock-bezel">
+            <div class="mock-screen" role="img" aria-label="{{t.mock_phone_label}}">
+              <div class="island"></div>
+              <div class="mock-status"><span>9:41</span></div>
+              <div class="mock-top">
+                <div class="mock-row"><span class="eyebrow">{{t.mock_calc}} · 3/20</span><span class="mock-timer">1:42</span></div>
+                <div class="mock-problem">37 + 48</div>
+                <div class="mock-progress"><div></div></div>
+              </div>
+              <div class="mock-answer">
+                <div class="slate"><span>85</span></div>
+                <div class="mock-keys"><div class="mock-key">{{t.mock_clear}}</div><div class="mock-key mock-key--go">{{t.mock_check}}</div></div>
+              </div>
+              <div class="mock-home"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mock mock--pad" id="mock-pad" role="tabpanel" aria-labelledby="tab-pad" dir="ltr" hidden>
+        <div class="mock-scale">
+          <div class="mock-btn" style="top:-3px;right:120px;width:90px;height:5px;border-radius:3px 3px 0 0"></div>
+          <div class="mock-bezel">
+            <div class="mock-screen" role="img" aria-label="{{t.mock_pad_label}}">
+              <div class="mock-status"><span>9:41</span></div>
+              <div class="mock-top">
+                <div class="mock-row"><span class="eyebrow">{{t.mock_calc}} · 3/20</span><span class="mock-timer">1:42</span></div>
+                <div class="mock-problem">37 + 48</div>
+                <div class="mock-progress"><div></div></div>
+              </div>
+              <div class="mock-answer">
+                <div class="mock-keys"><div class="mock-key">{{t.mock_clear}}</div><div class="mock-key mock-key--go">{{t.mock_check}}</div></div>
+                <div class="slate"><span>85</span></div>
+              </div>
+              <div class="mock-home"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="device-note" id="device-note">{{t.duo_note}}</div>
+    </div>
+
+    <div class="how-copy">
+      <div class="section-head">
+        <div class="eyebrow">{{t.nav_how}}</div>
+        <h2 class="h2" id="how-title">{{t.duo_title}}</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-n">1</div>
+          <div><div class="step-t">{{t.step1_title}}</div><div class="step-d" id="step-1">{{t.duo_step1}}</div></div>
+        </div>
+        <div class="step">
+          <div class="step-n">2</div>
+          <div><div class="step-t">{{t.step2_title}}</div><div class="step-d" id="step-2">{{t.duo_step2}}</div></div>
+        </div>
+        <div class="step">
+          <div class="step-n">3</div>
+          <div><div class="step-t">{{t.step3_title}}</div><div class="step-d">{{t.step3_text}}</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap section" style="display:grid;gap:40px">
+  <div class="section-head">
+    <div class="eyebrow">{{t.session_eyebrow}}</div>
+    <h2 class="h2">{{t.session_title}}</h2>
+  </div>
+  <div class="cards">
+    <article class="card">
+      <div class="card-chip" style="background-color:var(--fb-cat-calcul)" aria-hidden="true"></div>
+      <div class="card-name">{{t.calc_name}}</div>
+      <div class="card-meta">{{t.calc_meta}}</div>
+      <p class="card-text" style="margin:0">{{t.calc_text}}</p>
+    </article>
+    <article class="card">
+      <div class="card-chip" style="background-color:var(--fb-cat-vitesse)" aria-hidden="true"></div>
+      <div class="card-name">Stroop</div>
+      <div class="card-meta">{{t.stroop_meta}}</div>
+      <p class="card-text" style="margin:0">{{t.stroop_text}}</p>
+    </article>
+    <article class="card">
+      <div class="card-chip" style="background-color:var(--fb-cat-memoire)" aria-hidden="true"></div>
+      <div class="card-name">{{t.memory_name}}</div>
+      <div class="card-meta">{{t.memory_meta}}</div>
+      <p class="card-text" style="margin:0">{{t.memory_text}}</p>
+    </article>
+    <article class="card">
+      <div class="card-chip" style="background-color:var(--fb-cat-logique)" aria-hidden="true"></div>
+      <div class="card-name">{{t.mirror_name}}</div>
+      <div class="card-meta">{{t.mirror_meta}}</div>
+      <p class="card-text" style="margin:0">{{t.mirror_text}}</p>
+    </article>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap section track">
+    <div class="track-copy">
+      <div class="eyebrow">{{t.track_eyebrow}}</div>
+      <h2 class="h2">{{t.track_title}}</h2>
+      <p class="lede">{{t.track_text}}</p>
+    </div>
+    <div class="panel age">
+      <div class="eyebrow eyebrow--muted">{{t.brain_age}}</div>
+      <div class="age-value"><strong>34</strong><span>{{t.years}}</span></div>
+      <div class="pill-success">{{t.delta_week}}</div>
+      <div class="fine" style="margin-top:8px">{{t.indicative}}</div>
+    </div>
+    <div class="panel week">
+      <div class="week-head">
+        <div class="eyebrow eyebrow--muted">{{t.this_week}}</div>
+        <div class="streak">{{t.streak_12}}</div>
+      </div>
+      <div class="days" role="img" aria-label="{{t.week_label}}">
+        {{days}}
+      </div>
+      <div class="legend" aria-hidden="true">
+        <span><i style="border:2px solid var(--stamp-ink);background:var(--accent-soft)"></i>{{t.legend_played}}</span>
+        <span><i style="border:2px solid var(--stamp-perfect);background:var(--xp-soft)"></i>{{t.legend_perfect}}</span>
+        <span><i style="border:1.5px dashed var(--accent);background:var(--accent-soft)"></i>{{t.legend_today}}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap section" style="display:grid;gap:40px">
+  <div class="section-head">
+    <div class="eyebrow">{{t.devices_eyebrow}}</div>
+    <h2 class="h2">{{t.devices_title}}</h2>
+  </div>
+  <div class="devices">
+    <div class="device">
+      <h3>iPhone Duo</h3>
+      <p>{{t.device_duo}}</p>
+    </div>
+    <div class="device">
+      <h3>iPhone</h3>
+      <p>{{t.device_phone}}</p>
+    </div>
+    <div class="device">
+      <h3>iPad + Apple Pencil</h3>
+      <p>{{t.device_pad}}</p>
+    </div>
+  </div>
+</section>
+
+<section id="prix" class="wrap price-wrap">
+  <div class="price">
+    <div class="price-copy">
+      <div class="eyebrow">{{t.nav_price}}</div>
+      <h2 class="h2">{{t.price_title}}</h2>
+      <div class="price-value"><strong>{{t.price_amount}}</strong><span>{{t.price_note}}</span></div>
+      <ul class="perks">
+        <li><span class="check" aria-hidden="true"></span>{{t.perk_1}}</li>
+        <li><span class="check" aria-hidden="true"></span>{{t.perk_2}}</li>
+        <li><span class="check" aria-hidden="true"></span>{{t.perk_3}}</li>
+      </ul>
+      <a class="btn" data-store data-cheer href="#prix" style="margin-top:8px">{{t.cta_download}}</a>
+    </div>
+    <div class="price-plio">
+      <plio-3d id="price-plio" mood="fier" size="280" follow></plio-3d>
+    </div>
+  </div>
+</section>
+
+</main>
+
+{{footer}}
+</body>
+</html>

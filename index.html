@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="fr">
+<!-- Page générée par tools/build.py depuis src/ et i18n/ : ne pas éditer à la main. -->
+<html lang="fr" dir="ltr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,6 +13,23 @@
 <meta property="og:image" content="https://spocsk.github.io/foldbrain-site/img/icon-1024.png">
 <meta property="og:url" content="https://spocsk.github.io/foldbrain-site/">
 <meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<link rel="canonical" href="https://spocsk.github.io/foldbrain-site/">
+<link rel="alternate" hreflang="fr" href="https://spocsk.github.io/foldbrain-site/">
+<link rel="alternate" hreflang="en" href="https://spocsk.github.io/foldbrain-site/en/">
+<link rel="alternate" hreflang="zh-Hans" href="https://spocsk.github.io/foldbrain-site/zh-hans/">
+<link rel="alternate" hreflang="zh-Hant" href="https://spocsk.github.io/foldbrain-site/zh-hant/">
+<link rel="alternate" hreflang="hi" href="https://spocsk.github.io/foldbrain-site/hi/">
+<link rel="alternate" hreflang="es" href="https://spocsk.github.io/foldbrain-site/es/">
+<link rel="alternate" hreflang="ar" href="https://spocsk.github.io/foldbrain-site/ar/">
+<link rel="alternate" hreflang="bn" href="https://spocsk.github.io/foldbrain-site/bn/">
+<link rel="alternate" hreflang="pt-BR" href="https://spocsk.github.io/foldbrain-site/pt-br/">
+<link rel="alternate" hreflang="ru" href="https://spocsk.github.io/foldbrain-site/ru/">
+<link rel="alternate" hreflang="id" href="https://spocsk.github.io/foldbrain-site/id/">
+<link rel="alternate" hreflang="ur" href="https://spocsk.github.io/foldbrain-site/ur/">
+<link rel="alternate" hreflang="de" href="https://spocsk.github.io/foldbrain-site/de/">
+<link rel="alternate" hreflang="ja" href="https://spocsk.github.io/foldbrain-site/ja/">
+<link rel="alternate" hreflang="x-default" href="https://spocsk.github.io/foldbrain-site/en/">
 <link rel="icon" href="img/icon-1024.png">
 <link rel="apple-touch-icon" href="img/icon-1024.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,6 +37,27 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/site.css">
+<script>
+(function () {
+  var paths = {"en": "en/", "zh-Hans": "zh-hans/", "zh-Hant": "zh-hant/", "hi": "hi/", "es": "es/", "ar": "ar/", "bn": "bn/", "pt-BR": "pt-br/", "ru": "ru/", "id": "id/", "ur": "ur/", "de": "de/", "ja": "ja/"};
+  try {
+    if (/bot|crawl|spider|slurp/i.test(navigator.userAgent)) return;
+    var choice = localStorage.getItem('fb-lang');
+    if (!choice) {
+      var tags = navigator.languages || [navigator.language || ''];
+      for (var i = 0; i < tags.length && !choice; i++) {
+        var t = String(tags[i]).toLowerCase();
+        if (/^zh-(tw|hk|mo|hant)/.test(t)) choice = 'zh-Hant';
+        else if (/^zh/.test(t)) choice = 'zh-Hans';
+        else if (/^pt/.test(t)) choice = 'pt-BR';
+        else if (t.split('-')[0] === 'fr' || paths[t.split('-')[0]]) choice = t.split('-')[0];
+      }
+      choice = choice || 'en';
+    }
+    if (choice !== 'fr' && paths[choice]) location.replace(paths[choice] + location.hash);
+  } catch (e) {}
+})();
+</script>
 <script type="importmap">
 {
   "imports": { "three": "https://unpkg.com/three@0.184.0/build/three.module.js" },
@@ -28,6 +67,7 @@
   }
 }
 </script>
+<script type="application/json" id="i18n">{"duo_note": "iPhone Duo ouvert · un seul écran, plié au centre", "duo_title": "Le jeu au-dessus du pli, ton crayon en dessous.", "duo_step1": "Le jeu s'affiche sur la moitié haute, au-dessus du pli, sans geste à faire.", "duo_step2": "Au doigt ou au stylet, sur l'ardoise quadrillée de la moitié basse.", "phone_note": "iPhone · jeu en haut, ardoise en bas", "phone_title": "Le jeu en haut, ton crayon en bas.", "phone_step1": "Le jeu s'affiche en haut de l'écran, sans geste à faire.", "phone_step2": "Au doigt ou au stylet, sur l'ardoise quadrillée en bas, au pouce.", "pad_note": "iPad + Apple Pencil · jeu à gauche, ardoise à droite", "pad_title": "Le jeu à gauche, ton crayon à droite.", "pad_step1": "Le jeu s'affiche sur la partie gauche de l'écran, sans geste à faire.", "pad_step2": "Au doigt ou au stylet, sur la grande ardoise de droite, à l'Apple Pencil.", "plio_cheer": "Bonne idée. Je t'attends.", "plio_tickle": "Tu me chatouilles."}</script>
 <script type="module" src="plio/plio-3d.js"></script>
 <script type="module" src="js/site.js"></script>
 </head>
@@ -71,7 +111,7 @@
         <button class="tab" role="tab" id="tab-pad" aria-controls="mock-pad" aria-selected="false" tabindex="-1" data-device="pad">iPad</button>
       </div>
 
-      <div class="mock mock--duo" id="mock-duo" role="tabpanel" aria-labelledby="tab-duo">
+      <div class="mock mock--duo" id="mock-duo" role="tabpanel" aria-labelledby="tab-duo" dir="ltr">
         <div class="mock-scale">
           <div class="mock-btn" style="top:-3px;right:140px;width:84px;height:5px;border-radius:3px 3px 0 0"></div>
           <div class="mock-btn" style="left:-3px;top:150px;width:5px;height:56px;border-radius:3px 0 0 3px"></div>
@@ -95,7 +135,7 @@
         </div>
       </div>
 
-      <div class="mock mock--phone" id="mock-phone" role="tabpanel" aria-labelledby="tab-phone" hidden>
+      <div class="mock mock--phone" id="mock-phone" role="tabpanel" aria-labelledby="tab-phone" dir="ltr" hidden>
         <div class="mock-scale">
           <div class="mock-btn" style="left:-3px;top:180px;width:5px;height:64px;border-radius:3px 0 0 3px"></div>
           <div class="mock-btn" style="left:-3px;top:260px;width:5px;height:64px;border-radius:3px 0 0 3px"></div>
@@ -119,7 +159,7 @@
         </div>
       </div>
 
-      <div class="mock mock--pad" id="mock-pad" role="tabpanel" aria-labelledby="tab-pad" hidden>
+      <div class="mock mock--pad" id="mock-pad" role="tabpanel" aria-labelledby="tab-pad" dir="ltr" hidden>
         <div class="mock-scale">
           <div class="mock-btn" style="top:-3px;right:120px;width:90px;height:5px;border-radius:3px 3px 0 0"></div>
           <div class="mock-bezel">
@@ -284,7 +324,15 @@
       <a href="privacy.html">Confidentialité</a>
       <a href="mailto:apps@dylan-cdo.fr">Assistance</a>
     </nav>
+    <nav class="langs" aria-label="Langue">
+      <a href="./" hreflang="fr" lang="fr" data-lang="fr" aria-current="true">Français</a> <a href="en/" hreflang="en" lang="en" data-lang="en">English</a> <a href="zh-hans/" hreflang="zh-Hans" lang="zh-Hans" data-lang="zh-Hans">简体中文</a> <a href="zh-hant/" hreflang="zh-Hant" lang="zh-Hant" data-lang="zh-Hant">繁體中文</a> <a href="hi/" hreflang="hi" lang="hi" data-lang="hi">हिन्दी</a> <a href="es/" hreflang="es" lang="es" data-lang="es">Español</a> <a href="ar/" hreflang="ar" lang="ar" data-lang="ar">العربية</a> <a href="bn/" hreflang="bn" lang="bn" data-lang="bn">বাংলা</a> <a href="pt-br/" hreflang="pt-BR" lang="pt-BR" data-lang="pt-BR">Português (Brasil)</a> <a href="ru/" hreflang="ru" lang="ru" data-lang="ru">Русский</a> <a href="id/" hreflang="id" lang="id" data-lang="id">Bahasa Indonesia</a> <a href="ur/" hreflang="ur" lang="ur" data-lang="ur">اردو</a> <a href="de/" hreflang="de" lang="de" data-lang="de">Deutsch</a> <a href="ja/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+    </nav>
   </div>
 </footer>
+<script>
+for (const a of document.querySelectorAll('[data-lang]')) {
+  a.addEventListener('click', () => { try { localStorage.setItem('fb-lang', a.dataset.lang); } catch (e) {} });
+}
+</script>
 </body>
 </html>

@@ -3,27 +3,18 @@
 /** Lien de la fiche App Store. Tant que l'app n'est pas publiée, les boutons mènent au prix. */
 const APP_STORE_URL = 'https://apps.apple.com/app/id6828494656';
 
-const DEVICES = {
-  duo: {
-    note: 'iPhone Duo ouvert · un seul écran, plié au centre',
-    title: 'Le jeu au-dessus du pli, ton crayon en dessous.',
-    where: ['sur la moitié haute, au-dessus du pli', "sur l'ardoise quadrillée de la moitié basse"],
-  },
-  phone: {
-    note: 'iPhone · jeu en haut, ardoise en bas',
-    title: 'Le jeu en haut, ton crayon en bas.',
-    where: ["en haut de l'écran", "sur l'ardoise quadrillée en bas, au pouce"],
-  },
-  pad: {
-    note: 'iPad + Apple Pencil · jeu à gauche, ardoise à droite',
-    title: 'Le jeu à gauche, ton crayon à droite.',
-    where: ["sur la partie gauche de l'écran", "sur la grande ardoise de droite, à l'Apple Pencil"],
-  },
-};
+/** Textes de la page dans sa langue, posés par tools/build.py dans <script id="i18n">. */
+const T = JSON.parse(document.getElementById('i18n').textContent);
+
+const DEVICES = Object.fromEntries(['duo', 'phone', 'pad'].map((d) => [d, {
+  note: T[d + '_note'],
+  title: T[d + '_title'],
+  steps: [T[d + '_step1'], T[d + '_step2']],
+}]));
 
 const $ = (s) => document.querySelector(s);
 
-// ── Onglets (flèches gauche / droite comme un vrai tablist) ──
+// ── Onglets (flèches gauche / droite comme un vrai tablist, inversées en arabe et en ourdou) ──
 const tabs = [...document.querySelectorAll('.tab')];
 function pick(tab, focus) {
   const key = tab.dataset.device;
@@ -36,14 +27,16 @@ function pick(tab, focus) {
   const d = DEVICES[key];
   $('#device-note').textContent = d.note;
   $('#how-title').textContent = d.title;
-  $('#step-1').textContent = "Le jeu s'affiche " + d.where[0] + ', sans geste à faire.';
-  $('#step-2').textContent = 'Au doigt ou au stylet, ' + d.where[1] + '.';
+  $('#step-1').textContent = d.steps[0];
+  $('#step-2').textContent = d.steps[1];
   if (focus) tab.focus();
 }
 tabs.forEach((t, i) => {
   t.addEventListener('click', () => pick(t));
   t.addEventListener('keydown', (e) => {
-    const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+    const forward = document.dir === 'rtl' ? 'ArrowLeft' : 'ArrowRight';
+    const back = document.dir === 'rtl' ? 'ArrowRight' : 'ArrowLeft';
+    const step = e.key === forward ? 1 : e.key === back ? -1 : 0;
     if (step) { e.preventDefault(); pick(tabs[(i + step + tabs.length) % tabs.length], true); }
   });
 });
@@ -60,9 +53,9 @@ function say(text) {
   if (plio.say) plio.say(text);
 }
 for (const el of document.querySelectorAll('[data-cheer]')) {
-  el.addEventListener('mouseenter', () => { plio.play?.('joie'); say("Bonne idée. Je t'attends."); });
+  el.addEventListener('mouseenter', () => { plio.play?.('joie'); say(T.plio_cheer); });
 }
-plio.addEventListener('click', () => { plio.play?.('victoire'); say('Tu me chatouilles.'); });
+plio.addEventListener('click', () => { plio.play?.('victoire'); say(T.plio_tickle); });
 
 // Plio du hero : pas plus large que l'écran sur téléphone.
 function fitPlio() {
