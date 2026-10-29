@@ -1,0 +1,273 @@
+/* Fold Brain — palette « manuel scolaire années 80 » : couleurs d'imprimerie passées sur papier crème. */
+:root {
+  /* Papier crème */
+  --fb-paper-0: #FBF6EA;
+  --fb-paper-50: #F4ECDB;
+  --fb-paper-100: #EADFC8;
+  --fb-paper-200: #DCCDAF;
+  --fb-paper-300: #C7B48F;
+  /* Encre brun-noir */
+  --fb-ink-950: #1F1B17;
+  --fb-ink-900: #2B2621;
+  --fb-ink-800: #3A342D;
+  --fb-ink-700: #4B443B;
+  --fb-ink-600: #5E564B;
+  --fb-ink-500: #716759;
+  --fb-ink-400: #978C7C;
+  --fb-ink-300: #BDB2A0;
+  /* Vermillon passé — action */
+  --fb-synapse-100: #F8DDD0;
+  --fb-synapse-300: #F2A687;
+  --fb-synapse-400: #EE8A65;
+  --fb-synapse-500: #E8704A;
+  --fb-synapse-600: #CF5A33;
+  --fb-synapse-700: #9A3A1C;
+  --fb-synapse-800: #722A14;
+  /* Vert sapin passé — réussite */
+  --fb-pli-100: #D6E8DD;
+  --fb-pli-400: #5FA585;
+  --fb-pli-500: #367A5C;
+  --fb-pli-600: #2C6A4F;
+  --fb-pli-700: #235842;
+  /* Moutarde — XP, récompense */
+  --fb-eclat-100: #F6E7BE;
+  --fb-eclat-400: #EDBE4E;
+  --fb-eclat-500: #E2A62B;
+  --fb-eclat-700: #84590A;
+  /* Carmin — erreur */
+  --fb-rate-100: #F3D6DB;
+  --fb-rate-500: #B32D4A;
+  --fb-rate-700: #8C2238;
+  /* Bleu cahier, rose craie */
+  --fb-bleu-500: #3C6A9E;
+  --fb-rose-500: #C9607E;
+  /* Catégories d'exercices */
+  --fb-cat-calcul: #E8704A;
+  --fb-cat-memoire: #367A5C;
+  --fb-cat-lecture: #3C6A9E;
+  --fb-cat-logique: #C9607E;
+  --fb-cat-vitesse: #E2A62B;
+  /* Paliers de badges */
+  --fb-tier-bronze: #B9773F;
+  --fb-tier-argent: #9EA3A6;
+  --fb-tier-or: #E2A62B;
+  --fb-tier-platine: #79B3A9;
+  /* Stroop — toujours sur ardoise encre */
+  --fb-stroop-rouge: #F0705A;
+  --fb-stroop-bleu: #6E9BD6;
+  --fb-stroop-vert: #5DB48C;
+  --fb-stroop-jaune: #F1C451;
+  --stroop-slate: #2B2621;
+  /* Flammes de série */
+  --fb-flame-braise: #E8704A;
+  --fb-flame-feu: #E2A62B;
+  --fb-flame-brasier: #C9607E;
+  --fb-flame-off: #BDB2A0;
+  /* Tampons */
+  --stamp-ink: var(--fb-synapse-600);
+  --stamp-perfect: var(--fb-eclat-500);
+
+  /* Sémantique — clair */
+  --bg: var(--fb-paper-50);
+  --bg-elevated: var(--fb-paper-0);
+  --surface: var(--fb-paper-0);
+  --surface-sunken: var(--fb-paper-100);
+  --surface-pressed: var(--fb-paper-200);
+  --border: rgba(43,38,33,.22);
+  --border-strong: rgba(43,38,33,.42);
+  --text-1: var(--fb-ink-900);
+  --text-2: var(--fb-ink-600);
+  --text-3: var(--fb-ink-500);
+  --text-disabled: var(--fb-ink-300);
+  --accent: var(--fb-synapse-500);
+  --accent-strong: var(--fb-synapse-600);
+  --accent-edge: var(--fb-synapse-700);
+  --accent-soft: var(--fb-synapse-100);
+  --accent-ink: var(--fb-synapse-700);
+  --on-accent: var(--fb-ink-900); /* encre sur vermillon : 4,9:1 */
+  --success: var(--fb-pli-500);
+  --success-edge: var(--fb-pli-700);
+  --success-soft: var(--fb-pli-100);
+  --success-ink: var(--fb-pli-700);
+  --danger: var(--fb-rate-500);
+  --danger-edge: var(--fb-rate-700);
+  --danger-soft: var(--fb-rate-100);
+  --danger-ink: var(--fb-rate-700);
+  --xp: var(--fb-eclat-500);
+  --xp-soft: var(--fb-eclat-100);
+  --xp-ink: var(--fb-eclat-700);
+  --pad-bg: var(--fb-paper-0);
+  --pad-grid: rgba(60,106,158,.16); /* quadrillage bleu cahier */
+  --pad-ink: var(--fb-ink-900);
+  --print-shadow: rgba(43,38,33,.24);
+  --halftone-ink: rgba(43,38,33,.10);
+  /* Mascotte Plio */
+  --plio-line: #3A332C;
+  --plio-pink: #EBA79F;
+  --plio-shade: #D98880;
+  --plio-cheek: #E07A6E;
+  --hinge: #0B0B0F;
+  --scrim: rgba(31,27,23,.5);
+}
+/* Sombre — « tableau noir » : ardoise verte, craie crème */
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1F2925; --bg-elevated: #26322D; --surface: #26322D; --surface-sunken: #18201D; --surface-pressed: #314039;
+  --border: rgba(239,232,214,.16); --border-strong: rgba(239,232,214,.28);
+  --text-1: #EFE8D6; --text-2: #B9B3A2; --text-3: #8D8877; --text-disabled: #55594F;
+  --accent: #EC7B55; --accent-strong: #F08E6C; --accent-edge: #9A3A1C; --accent-soft: rgba(232,112,74,.18); --accent-ink: #F4A587;
+  --on-accent: #2B2621;
+  --success: #4C9B78; --success-edge: #1F4D3A; --success-soft: rgba(63,138,105,.22); --success-ink: #8FCDAF;
+  --danger: #D2506A; --danger-edge: #6E1729; --danger-soft: rgba(179,45,74,.24); --danger-ink: #F29AAD;
+  --xp: #EDBE4E; --xp-soft: rgba(226,166,43,.18); --xp-ink: #F3D27E;
+  --pad-bg: #23302B; --pad-grid: rgba(239,232,214,.10); --pad-ink: #EFE8D6;
+  --print-shadow: rgba(0,0,0,.45); --halftone-ink: rgba(239,232,214,.07);
+  --plio-line: #EFE8D6; --plio-pink: #C98880; --plio-shade: #A9665F;
+  --scrim: rgba(0,0,0,.6);
+} }
+[data-theme="dark"] {
+  --bg: #1F2925; --bg-elevated: #26322D; --surface: #26322D; --surface-sunken: #18201D; --surface-pressed: #314039;
+  --border: rgba(239,232,214,.16); --border-strong: rgba(239,232,214,.28);
+  --text-1: #EFE8D6; --text-2: #B9B3A2; --text-3: #8D8877; --text-disabled: #55594F;
+  --accent: #EC7B55; --accent-strong: #F08E6C; --accent-edge: #9A3A1C; --accent-soft: rgba(232,112,74,.18); --accent-ink: #F4A587;
+  --on-accent: #2B2621;
+  --success: #4C9B78; --success-edge: #1F4D3A; --success-soft: rgba(63,138,105,.22); --success-ink: #8FCDAF;
+  --danger: #D2506A; --danger-edge: #6E1729; --danger-soft: rgba(179,45,74,.24); --danger-ink: #F29AAD;
+  --xp: #EDBE4E; --xp-soft: rgba(226,166,43,.18); --xp-ink: #F3D27E;
+  --pad-bg: #23302B; --pad-grid: rgba(239,232,214,.10); --pad-ink: #EFE8D6;
+  --print-shadow: rgba(0,0,0,.45); --halftone-ink: rgba(239,232,214,.07);
+  --plio-line: #EFE8D6; --plio-pink: #C98880; --plio-shade: #A9665F;
+  --scrim: rgba(0,0,0,.6);
+}
+
+:root {
+  --font-text: -apple-system, "SF Pro Text", "SF Pro", system-ui, "Helvetica Neue", sans-serif;
+  --font-display: -apple-system, "SF Pro Display", "SF Pro", system-ui, "Helvetica Neue", sans-serif;
+  --font-rounded: ui-rounded, "SF Pro Rounded", "Nunito", -apple-system, system-ui, sans-serif;
+
+  /* Échelle iOS (Dynamic Type, taille Large) — taille / interligne */
+  --type-large-title: 700 34px/41px var(--font-rounded);
+  --type-title-1: 700 28px/34px var(--font-rounded);
+  --type-title-2: 700 22px/28px var(--font-rounded);
+  --type-title-3: 600 20px/25px var(--font-rounded);
+  --type-headline: 600 17px/22px var(--font-text);
+  --type-body: 400 17px/22px var(--font-text);
+  --type-callout: 400 16px/21px var(--font-text);
+  --type-subhead: 400 15px/20px var(--font-text);
+  --type-footnote: 400 13px/18px var(--font-text);
+  --type-caption-1: 500 12px/16px var(--font-text);
+  --type-caption-2: 600 11px/13px var(--font-text);
+
+  /* Jeu — SF Rounded, chiffres tabulaires */
+  --type-countdown: 900 120px/1 var(--font-rounded);
+  --type-score: 900 72px/1 var(--font-rounded);
+  --type-problem: 800 56px/1.05 var(--font-rounded);
+  --type-problem-sm: 800 40px/1.1 var(--font-rounded);
+  --type-stat: 800 28px/1 var(--font-rounded);
+  --type-label: 700 13px/16px var(--font-rounded);
+
+  --tracking-tight: -0.02em;
+  --tracking-caps: 0.06em;
+  --weight-regular: 400; --weight-medium: 500; --weight-semibold: 600; --weight-bold: 700; --weight-heavy: 800; --weight-black: 900;
+}
+
+:root {
+  --space-0: 0px; --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px;
+  --space-6: 24px; --space-8: 32px; --space-10: 40px; --space-12: 48px; --space-16: 64px;
+  --margin-screen: 20px;
+  --margin-screen-pad: 32px;
+  --hit-min: 44px;
+  /* iPhone Duo — écran intérieur ouvert, tenu droit : 669 × 951 pt, pli horizontal au centre */
+  --duo-open-width: 669px;
+  --duo-open-height: 951px;
+  --fold-crease: 40px;         /* bande du pli signalée par le système */
+  --fold-dead-zone: 16px;      /* marge en plus, de chaque côté de la bande */
+  --duo-outer-width: 466px;    /* écran extérieur, fermé */
+  --duo-outer-height: 678px;
+  --hinge-width: 14px;
+  /* Zones de sécurité */
+  --safe-top-phone: 59px;      /* Dynamic Island + barre d'état */
+  --safe-bottom-phone: 34px;   /* indicateur d'accueil */
+  --safe-top-duo: 50px;        /* écran haut du Duo */
+  --safe-bottom-duo: 30px;     /* écran bas du Duo */
+  --safe-top-pad: 24px;
+  --safe-bottom-pad: 20px;
+  --pencil-palm-zone: 120px;   /* bas de l'ardoise iPad : rejet de paume, aucun bouton */
+  /* Grilles */
+  --grid-cols-phone: 4; --grid-gutter-phone: 12px;
+  --grid-cols-duo: 4;   --grid-gutter-duo: 12px;
+  --grid-cols-pad: 12;  --grid-gutter-pad: 20px;
+  /* Superposition */
+  --z-base: 0; --z-sticky: 10; --z-sheet: 50; --z-confetti: 60; --z-toast: 70;
+}
+
+:root {
+  --radius-xs: 6px; --radius-sm: 10px; --radius-md: 14px; --radius-lg: 20px; --radius-xl: 28px; --radius-2xl: 36px;
+  --radius-pill: 999px;
+  --radius-screen-phone: 55px;
+  --radius-screen-pad: 38px;
+}
+
+/* Ombres « impression » : décalage net, sans flou, comme un aplat mal repéré. */
+:root {
+  --shadow-0: none;
+  --shadow-1: 2px 2px 0 var(--print-shadow);
+  --shadow-2: 3px 3px 0 var(--print-shadow);
+  --shadow-3: 5px 5px 0 var(--print-shadow);
+  --shadow-4: 6px 6px 0 var(--print-shadow), 0 24px 60px rgba(43,38,33,.18);
+  --shadow-inset: inset 0 2px 0 rgba(43,38,33,.08);
+  --edge-depth: 4px;
+  --edge-depth-pressed: 1px;
+  --glow-xp: 0 0 0 4px rgba(226,166,43,.25);
+  --glow-accent: 0 0 0 4px rgba(232,112,74,.25);
+}
+[data-theme="dark"] {
+  --shadow-1: 2px 2px 0 rgba(0,0,0,.35);
+  --shadow-2: 3px 3px 0 rgba(0,0,0,.4);
+  --shadow-3: 5px 5px 0 rgba(0,0,0,.45);
+  --shadow-4: 6px 6px 0 rgba(0,0,0,.4), 0 24px 60px rgba(0,0,0,.5);
+  --shadow-inset: inset 0 2px 0 rgba(0,0,0,.35);
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --shadow-1: 2px 2px 0 rgba(0,0,0,.35);
+  --shadow-2: 3px 3px 0 rgba(0,0,0,.4);
+  --shadow-3: 5px 5px 0 rgba(0,0,0,.45);
+  --shadow-4: 6px 6px 0 rgba(0,0,0,.4), 0 24px 60px rgba(0,0,0,.5);
+  --shadow-inset: inset 0 2px 0 rgba(0,0,0,.35);
+} }
+
+:root {
+  --ease-out: cubic-bezier(.2,.8,.2,1);
+  --ease-in-out: cubic-bezier(.65,0,.35,1);
+  --ease-spring: cubic-bezier(.34,1.56,.64,1);
+  --dur-instant: 90ms; --dur-fast: 160ms; --dur-base: 240ms; --dur-slow: 400ms; --dur-reward: 700ms;
+}
+@keyframes fb-pop { 0% { transform: scale(.6); opacity: 0 } 60% { transform: scale(1.08); opacity: 1 } 100% { transform: scale(1) } }
+@keyframes fb-shake { 0%,100% { transform: translateX(0) } 20%,60% { transform: translateX(-6px) } 40%,80% { transform: translateX(6px) } }
+@keyframes fb-rise { from { transform: translateY(8px); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes fb-spin { to { transform: rotate(360deg) } }
+@keyframes fb-flicker { 0%,100% { transform: scale(1) rotate(0) } 50% { transform: scale(1.06,.96) rotate(-2deg) } }
+@keyframes fb-stamp { 0% { transform: scale(1.8) rotate(-24deg); opacity: 0 } 70% { transform: scale(.92) rotate(-8deg); opacity: 1 } 100% { transform: scale(1) rotate(-8deg) } }
+@keyframes fb-sheet-up { from { transform: translateY(100%) } to { transform: none } }
+@keyframes fb-fade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes fb-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(229,72,77,.45) } 50% { box-shadow: 0 0 0 8px rgba(229,72,77,0) } }
+@media (prefers-reduced-motion: reduce) { :root { --dur-fast: 0ms; --dur-base: 0ms; --dur-slow: 0ms; --dur-reward: 0ms; } }
+
+/* Textures d'imprimerie — à poser en background-image, jamais derrière du texte courant. */
+:root {
+  /* Trame de points (demi-ton) */
+  --halftone: radial-gradient(var(--halftone-ink) 1.1px, transparent 1.5px) 0 0 / 6px 6px;
+  --halftone-coarse: radial-gradient(var(--halftone-ink) 1.8px, transparent 2.3px) 0 0 / 10px 10px;
+  /* Hachures */
+  --hatch: repeating-linear-gradient(45deg, var(--halftone-ink) 0 1.5px, transparent 1.5px 6px);
+  /* Quadrillage de cahier (ardoise) */
+  --grid-cahier: linear-gradient(var(--pad-grid) 1px, transparent 1px) 0 0 / 20px 20px, linear-gradient(90deg, var(--pad-grid) 1px, transparent 1px) 0 0 / 20px 20px;
+  /* Filet d'encre des cartes et boutons */
+  --ink-line: 1.5px solid var(--border-strong);
+}
+
+html, body { margin: 0; background: var(--bg); color: var(--text-1); font: var(--type-body); -webkit-font-smoothing: antialiased; }
+* { box-sizing: border-box; }
+a { color: var(--accent-ink); text-decoration: none; }
+a:hover { color: var(--accent-strong); text-decoration: underline; }
+.fb-num { font-variant-numeric: tabular-nums; }
+
