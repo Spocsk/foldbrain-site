@@ -1,7 +1,7 @@
 // Interactions de la landing : onglets d'appareils, bulle et réactions de Plio, lien App Store.
 
 /** Lien de la fiche App Store. Tant que l'app n'est pas publiée, les boutons mènent au prix. */
-const APP_STORE_URL = '';
+const APP_STORE_URL = 'https://apps.apple.com/app/id6828494656';
 
 const DEVICES = {
   duo: {
