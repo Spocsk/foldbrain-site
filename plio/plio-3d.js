@@ -33,13 +33,26 @@ function getEngine() {
   return engine;
 }
 
+/** Ombre portée : tache d'encre au centre, fondue jusqu'au bord (partagée). */
+let shadowTex = null;
+function shadowTexture() {
+  if (shadowTex) return shadowTex;
+  const c = document.createElement('canvas'); c.width = c.height = 128;
+  const g = c.getContext('2d');
+  const grad = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  grad.addColorStop(0, 'rgba(43,38,33,0.2)'); grad.addColorStop(0.5, 'rgba(43,38,33,0.14)'); grad.addColorStop(1, 'rgba(43,38,33,0)');
+  g.fillStyle = grad; g.fillRect(0, 0, 128, 128);
+  shadowTex = new THREE.CanvasTexture(c); shadowTex.colorSpace = THREE.SRGBColorSpace;
+  return shadowTex;
+}
+
 function makeScene() {
   const scene = new THREE.Scene();
   scene.add(new THREE.HemisphereLight(0xfff6ea, 0xd8c6a8, 1.6));
   const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(1.6, 2.6, 2.4); scene.add(key);
   const rim = new THREE.DirectionalLight(0xffe2cc, 0.8); rim.position.set(-2, 1.2, -1.5); scene.add(rim);
-  const shadow = new THREE.Mesh(new THREE.CircleGeometry(0.5, 40), new THREE.MeshBasicMaterial({ color: 0x2b2621, transparent: true, opacity: 0.16, depthWrite: false }));
-  shadow.rotation.x = -Math.PI / 2; shadow.position.y = 0.002; shadow.scale.set(1.15, 0.8, 1); scene.add(shadow);
+  const shadow = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 1.1), new THREE.MeshBasicMaterial({ map: shadowTexture(), transparent: true, depthWrite: false }));
+  shadow.rotation.x = -Math.PI / 2; shadow.position.y = 0.002; shadow.scale.set(1.15, 0.8, 1); shadow.renderOrder = -1; scene.add(shadow);
   return { scene, shadow };
 }
 

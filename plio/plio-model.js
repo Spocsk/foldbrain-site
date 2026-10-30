@@ -1,11 +1,15 @@
 // Plio en three.js, porté de FoldBrain/Design/Plio3D.swift (même anatomie, mêmes humeurs, mêmes animations).
-// Ombrage toon à 3 paliers, contour encre par coque inversée, trame demi-ton dans les ombres.
+// Cerveau d'un seul maillage sculpté (PlioMesh : circonvolutions en bruit de gradient, fissure, scissures,
+// cervelet), membres effilés et bottines sculptés, moufles. Ombrage toon à 3 paliers avec sillons seuillés
+// au pixel, reflet net, contour encre par coque (gonflée le long d'une normale lisse sur les maillages
+// sculptés), trame demi-ton dans les ombres.
 //
 // createPlio(THREE, { pixelRatio, reducedMotion, size }) → {
 //   root, mood, pose(m), setMood(m), play(nom), look(x, y), unlook(), say(texte), update(dt, t),
 //   setOutline(bool), setHalftone(bool)
 // }
 // root.children[0] est le corps (pivot aux pieds) : <plio-3d> s'en sert pour l'ombre portée.
+// Les maillages sont calculés une fois au chargement du module (MESH_MS : durée en ms).
 
 export const MOODS = ['neutre', 'content', 'surpris', 'reflechit', 'encourage', 'fier', 'triste', 'endormi'];
 
@@ -63,37 +67,238 @@ function mouthOf(mood) {
 const smoothstep = (a, b, x) => { const t = Math.min(Math.max((x - a) / (b - a), 0), 1); return t * t * (3 - 2 * t); };
 const easeOut = (x) => { const t = Math.min(Math.max(x, 0), 1); return 1 - (1 - t) ** 3; };
 
-/** Point de la surface du cerveau : φ autour de l'axe vertical depuis l'avant, θ en hauteur (degrés). */
-function onBrain(phi, theta, k = 1) {
-  const p = phi * Math.PI / 180, t = theta * Math.PI / 180;
-  return [BRAIN[0] * Math.cos(t) * Math.sin(p) * k, BRAIN[1] * Math.sin(t) * k, BRAIN[2] * Math.cos(t) * Math.cos(p) * k];
-}
-
 /** Point de la face avant à (x, y), décollé de `lift` le long de la profondeur. */
 function surface(x, y, lift) {
   const q = 1 - (x / BRAIN[0]) ** 2 - (y / BRAIN[1]) ** 2;
   return [x, y, BRAIN[2] * Math.sqrt(Math.max(q, 0)) + lift];
 }
 
+// ── Maillages sculptés (PlioMesh) ──
+// Formes faites d'une sphère déformée : cerveau à circonvolutions, membres effilés, bottines.
+// Calculées une fois au chargement du module (tableaux bruts) et partagées par tous les Plio de la page.
+
+function hash(x, y, z, k) {
+  let h = Math.imul(x, 0x8DA6B343) ^ Math.imul(y, 0xD8163841);
+  h ^= Math.imul(z, 0xCB1AB31F) ^ Math.imul(k, 0x165667B1);
+  h ^= h >>> 13;
+  h = Math.imul(h, 0x5BD1E995);
+  h ^= h >>> 15;
+  return (h & 0xFFFFFF) / 0xFFFFFF;
+}
+
+/** Bruit de gradient (Perlin), environ −1…1. */
+function gradient(px, py, pz) {
+  const ix = Math.floor(px), iy = Math.floor(py), iz = Math.floor(pz);
+  const fx = px - ix, fy = py - iy, fz = pz - iz;
+  const fade = (f) => f * f * f * (f * (f * 6 - 15) + 10);
+  const ux = fade(fx), uy = fade(fy), uz = fade(fz);
+  const g = (dx, dy, dz) => {
+    const x = ix + dx, y = iy + dy, z = iz + dz;
+    const vx = hash(x, y, z, 1) * 2 - 1 + 0.0001, vy = hash(x, y, z, 2) * 2 - 1 + 0.0001, vz = hash(x, y, z, 3) * 2 - 1 + 0.0001;
+    const l = Math.hypot(vx, vy, vz);
+    return (vx * (fx - dx) + vy * (fy - dy) + vz * (fz - dz)) / l;
+  };
+  const mix = (a, b, t) => a + (b - a) * t;
+  const x00 = mix(g(0, 0, 0), g(1, 0, 0), ux), x10 = mix(g(0, 1, 0), g(1, 1, 0), ux);
+  const x01 = mix(g(0, 0, 1), g(1, 0, 1), ux), x11 = mix(g(0, 1, 1), g(1, 1, 1), ux);
+  return mix(mix(x00, x10, uy), mix(x01, x11, uy), uz) * 1.6;
+}
+
+/** Capsule effilée : profil presque droit, bouts arrondis. */
+function limb([dx, dy, dz], center, half, bottom, top) {
+  const y = Math.sign(dy || 1) * Math.pow(Math.abs(dy), 0.55);
+  const c = Math.sqrt(Math.max(1 - dy * dy, 0));
+  const k = c > 0.0001 ? Math.pow(c, 0.5) / c : 0;
+  const r = bottom + (top - bottom) * (y + 1) / 2;
+  return { p: [dx * k * r, center + y * half, dz * k * r] };
+}
+
+/**
+ * Point du cerveau pour une direction de la sphère unité : l'ellipsoïde creusé de sillons
+ * (lignes de niveau zéro d'un bruit de gradient), d'une fissure entre les hémisphères, de la
+ * scissure latérale et d'un cervelet strié à l'arrière. Le relief est presque effacé sur le visage.
+ */
+function brainPoint(d) {
+  const [dx, dy, dz] = d;
+  const p0 = [BRAIN[0] * dx, BRAIN[1] * dy, BRAIN[2] * dz];
+  let nx = p0[0] / BRAIN[0] ** 2, ny = p0[1] / BRAIN[1] ** 2, nz = p0[2] / BRAIN[2] ** 2;
+  const nl = Math.hypot(nx, ny, nz); nx /= nl; ny /= nl; nz /= nl;
+
+  // Visage : ellipse autour des yeux, des joues et de la bouche, sur la face avant.
+  const fx = p0[0] / 0.44, fy = (p0[1] + 0.03) / 0.31;
+  const face = (1 - smoothstep(0.75, 1.05, Math.hypot(fx, fy))) * smoothstep(0.2, 0.5, dz);
+  // Dessous, là où sortent les jambes : lisse.
+  const under = smoothstep(-0.92, -0.72, dy);
+
+  // Circonvolutions : chaque hémisphère a les siennes.
+  const o = dx < 0 ? [17.3, 4.1, 9.7] : [0, 0, 0];
+  const qx = dx * 4.3 + o[0], qy = dy * 4.3 + o[1], qz = dz * 4.3 + o[2];
+  const n = gradient(qx, qy, qz) + 0.28 * gradient(qx * 2.1 + 5.2, qy * 2.1 + 5.2, qz * 2.1 + 5.2);
+  const e = Math.abs(n) * 1.1;
+  // Profil en boudin : flanc raide au sillon, dessus bombé.
+  const t = Math.min(e / 0.55, 1);
+  let pillow = Math.sqrt(1 - (1 - t) * (1 - t));
+  let groove = 1 - smoothstep(0, 0.12 - 0.05 * face, e);
+
+  // Cervelet : bas de l'arrière, rangées serrées et peu profondes (la silhouette reste nette).
+  const cRaw = smoothstep(-0.4, -0.72, dz) * smoothstep(-0.12, -0.45, dy);
+  const cer = smoothstep(0.35, 0.65, cRaw);
+  const stripe = 0.5 + 0.5 * Math.cos(dy * 75 + 6 * dx * dx);
+  pillow += (1 - 0.45 * (1 - Math.sqrt(Math.min(stripe / 0.5, 1))) - pillow) * cer;
+  groove += (1 - smoothstep(0.03, 0.22, stripe) - groove) * cer;
+  const transverse = Math.exp(-(((cRaw - 0.5) / 0.1) ** 2)) * smoothstep(-0.2, -0.45, dz);
+
+  // Fissure entre les hémisphères, de la nuque au menton, fine sur le visage.
+  const fissure = Math.exp(-((dx / 0.045) ** 2)) * smoothstep(-0.95, -0.7, dy);
+  // Scissure latérale (plus haute vers l'arrière) et lobe temporal en dessous.
+  const lateral = smoothstep(0.45, 0.75, Math.abs(dx)) * smoothstep(-0.6, -0.25, dz);
+  const ys = -0.12 - 0.2 * dz;
+  const sylvian = Math.exp(-(((dy - ys) / 0.045) ** 2)) * lateral;
+  const temporal = Math.exp(-(((dy - ys + 0.22) / 0.16) ** 2)) * lateral;
+
+  const amp = 0.075 * (1 - 0.94 * face) * under;
+  const offset = -amp * (1 - pillow)
+    - (0.085 - 0.073 * face) * fissure
+    - 0.035 * sylvian * (1 - face)
+    - 0.03 * transverse
+    + 0.022 * temporal;
+  const lines = Math.max(groove * under * (1 - 0.75 * face), fissure * (1 - 0.4 * face), sylvian, transverse);
+
+  // Pas une couleur : tracé des sillons et ombre au pied des bosses, seuillés par pixel dans le shader.
+  const shade = 0.93 + 0.07 * (pillow * under + (1 - under));
+  return { p: [p0[0] + nx * offset, p0[1] + ny * offset, p0[2] + nz * offset], sculpt: [lines, shade], push: [nx, ny, nz] };
+}
+
+/**
+ * Sphère en anneaux déformée par `shape` : position, et en option le tracé (`sculpt`) et la direction
+ * de gonflement du contour (`push`, sinon la normale). Le contour gonfle le long d'une normale lisse
+ * (celle de l'ellipsoïde pour le cerveau) : il dessine la silhouette et les bords des plis sans
+ * s'emmêler au fond des sillons. Un seul sommet par pôle ; normales recalculées à partir des faces.
+ */
+function sculpt(rings, segments, shape) {
+  const count = 2 + (rings - 1) * segments;
+  const pos = new Float32Array(count * 3);
+  let sculptAttr = null, push = null;
+  const put = (i, d) => {
+    const r = shape(d);
+    pos.set(r.p, i * 3);
+    if (r.sculpt) { sculptAttr ||= new Float32Array(count * 2); sculptAttr.set(r.sculpt, i * 2); }
+    if (r.push) { push ||= new Float32Array(count * 3); push.set(r.push, i * 3); }
+  };
+  put(0, [0, -1, 0]);
+  for (let r = 1; r < rings; r++) {
+    const t = -Math.PI / 2 + Math.PI * r / rings;
+    for (let s = 0; s < segments; s++) {
+      const p = 2 * Math.PI * s / segments;
+      put(1 + (r - 1) * segments + s, [Math.cos(t) * Math.sin(p), Math.sin(t), Math.cos(t) * Math.cos(p)]);
+    }
+  }
+  const north = count - 1;
+  put(north, [0, 1, 0]);
+
+  const v = (r, s) => 1 + (r - 1) * segments + (s % segments);
+  const idx = new Uint32Array(rings * segments * 6);
+  let k = 0;
+  for (let s = 0; s < segments; s++) {
+    idx[k++] = 0; idx[k++] = v(1, s + 1); idx[k++] = v(1, s);
+    idx[k++] = v(rings - 1, s); idx[k++] = v(rings - 1, s + 1); idx[k++] = north;
+  }
+  for (let r = 1; r < rings - 1; r++) {
+    for (let s = 0; s < segments; s++) {
+      const a = v(r, s), b = v(r, s + 1), c = v(r + 1, s), d = v(r + 1, s + 1);
+      idx[k++] = a; idx[k++] = b; idx[k++] = c; idx[k++] = b; idx[k++] = d; idx[k++] = c;
+    }
+  }
+  const index = idx.subarray(0, k);
+
+  const nor = new Float32Array(count * 3);
+  for (let i = 0; i < k; i += 3) {
+    const a = index[i] * 3, b = index[i + 1] * 3, c = index[i + 2] * 3;
+    const ux = pos[b] - pos[a], uy = pos[b + 1] - pos[a + 1], uz = pos[b + 2] - pos[a + 2];
+    const wx = pos[c] - pos[a], wy = pos[c + 1] - pos[a + 1], wz = pos[c + 2] - pos[a + 2];
+    const cx = uy * wz - uz * wy, cy = uz * wx - ux * wz, cz = ux * wy - uy * wx;
+    for (const j of [a, b, c]) { nor[j] += cx; nor[j + 1] += cy; nor[j + 2] += cz; }
+  }
+  for (let i = 0; i < count * 3; i += 3) {
+    const l = Math.hypot(nor[i], nor[i + 1], nor[i + 2]);
+    if (l > 0) { nor[i] /= l; nor[i + 1] /= l; nor[i + 2] /= l; } else { nor[i] = 0; nor[i + 1] = 1; nor[i + 2] = 0; }
+  }
+  return { pos, nor, sculpt: sculptAttr, push: push || nor, index };
+}
+
+const meshStart = performance.now();
+const MESH = {
+  brain: sculpt(180, 280, brainPoint),
+  arm: sculpt(24, 28, (d) => limb(d, -0.12, 0.14, 0.042, 0.056)),
+  leg: sculpt(24, 28, (d) => limb(d, 0.2, 0.15, 0.06, 0.074)),
+  /** Bottine : dessous plat, plus large à l'avant. */
+  foot: sculpt(28, 36, ([x, y, z]) => ({ p: [x * 0.1 * (1 + 0.12 * z), Math.max(y, -0.55) * 0.075, z * 0.135] })),
+};
+/** Temps de génération des maillages, en ms (lu par la page de test). */
+export const MESH_MS = performance.now() - meshStart;
+
+/** BufferGeometry des maillages, créées au premier Plio (il faut THREE) puis partagées. */
+let geometries = null;
+function meshGeometries(THREE) {
+  if (geometries) return geometries;
+  geometries = {};
+  for (const [name, m] of Object.entries(MESH)) {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(m.pos, 3));
+    g.setAttribute('normal', new THREE.BufferAttribute(m.nor, 3));
+    g.setAttribute('push', new THREE.BufferAttribute(m.push, 3));
+    if (m.sculpt) g.setAttribute('sculpt', new THREE.BufferAttribute(m.sculpt, 2));
+    g.setIndex(new THREE.BufferAttribute(m.index, 1));
+    g.computeBoundingSphere();
+    geometries[name] = g;
+  }
+  return geometries;
+}
+
+// ── Shaders ──
+
 const VERT = `
 varying vec3 vNormal;
+#ifdef SCULPT
+attribute vec2 sculpt;
+varying vec2 vSculpt;
+#endif
 void main() {
   vNormal = normalize(normalMatrix * normal);
+  #ifdef SCULPT
+  vSculpt = sculpt;
+  #endif
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }`;
+/** Ombrage toon à 3 paliers ; la trame demi-ton n'apparaît que dans les deux paliers sombres. */
 const FRAG = `
 uniform vec3 color;
 uniform vec3 keyDir;
 uniform vec3 rimDir;
 uniform float halftone;
 uniform float cellPx;
+#ifdef SCULPT
+uniform vec3 roseColor;
+uniform vec3 sillonColor;
+uniform vec3 inkColor;
+varying vec2 vSculpt;
+#endif
 varying vec3 vNormal;
 void main() {
   vec3 nv = normalize(vNormal);
   vec3 n = normalize((vec4(nv, 0.0) * viewMatrix).xyz);
   float ndl = dot(n, keyDir);
   float tier = ndl > 0.2 ? 1.0 : (ndl > -0.3 ? 0.72 : 0.5);
-  vec3 c = color * tier;
+  vec3 base = color;
+  #ifdef SCULPT
+  // Maillage sculpté : x = tracé des sillons, y = ombre des creux, seuillés au pixel près.
+  float l = vSculpt.x;
+  float fw = max(fwidth(l), 0.002);
+  vec3 col = mix(roseColor, sillonColor, smoothstep(0.55 - fw, 0.55 + fw, l));
+  col = mix(col, inkColor, 0.7 * smoothstep(0.84 - fw, 0.84 + fw, l));
+  base = col * vSculpt.y;
+  #endif
+  vec3 c = base * tier;
   if (tier < 0.99 && halftone > 0.5) {
     vec2 cell = fract(gl_FragCoord.xy / cellPx) - 0.5;
     float r = tier < 0.6 ? 0.3 : 0.2;
@@ -102,7 +307,25 @@ void main() {
   }
   float rim = smoothstep(0.55, 0.75, dot(n, rimDir)) * (1.0 - smoothstep(0.1, 0.5, nv.z));
   c += rim * 0.06;
+  // Reflet net en haut des bosses : aspect pâte à modeler.
+  vec3 view = normalize((vec4(0.0, 0.0, 1.0, 0.0) * viewMatrix).xyz);
+  float spec = smoothstep(0.988, 0.994, dot(n, normalize(keyDir + view)));
+  c = mix(c, c * 1.03 + 0.04, spec);
   gl_FragColor = vec4(c, 1.0);
+  #include <colorspace_fragment>
+}`;
+
+/** Coque de contour des maillages sculptés : gonflée le long de `push` pour suivre le relief. */
+const SHELL_VERT = `
+attribute vec3 push;
+uniform float outline;
+void main() {
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position + push * outline, 1.0);
+}`;
+const SHELL_FRAG = `
+uniform vec3 color;
+void main() {
+  gl_FragColor = vec4(color, 1.0);
   #include <colorspace_fragment>
 }`;
 
@@ -113,10 +336,14 @@ export function createPlio(THREE, opts = {}) {
   const amp = reducedMotion ? 0.3 : 1;
 
   const toonMats = [];
-  const toon = (hex, halftone) => {
+  const toon = (hex, halftone, sculpted = false) => {
     const m = new THREE.ShaderMaterial({
       vertexShader: VERT, fragmentShader: FRAG,
+      defines: sculpted ? { SCULPT: 1 } : {},
       uniforms: {
+        roseColor: { value: new THREE.Color(COLORS.rose) },
+        sillonColor: { value: new THREE.Color(COLORS.sillon) },
+        inkColor: { value: new THREE.Color(COLORS.encre) },
         color: { value: new THREE.Color(hex) },
         keyDir: { value: new THREE.Vector3(1.6, 2.6, 2.4).normalize() },
         rimDir: { value: new THREE.Vector3(-2, 1.2, -1.5).normalize() },
@@ -133,7 +360,7 @@ export function createPlio(THREE, opts = {}) {
   const flat = (hex, extra = {}) => new THREE.MeshBasicMaterial({ color: hex, ...extra });
 
   const rose = toon(COLORS.rose, true);
-  const sillon = toon(COLORS.sillon, true);
+  const brainSkin = toon(COLORS.rose, true, true);
   const white = toon(COLORS.oeil, false);
   const ink = flat(COLORS.encre);
   const hullMat = flat(COLORS.encre, { side: THREE.BackSide });
@@ -153,6 +380,21 @@ export function createPlio(THREE, opts = {}) {
   };
   const eyeLine = [0.009, 0.9];
 
+  /** Maillage sculpté partagé, avec sa coque de contour qui suit le relief. */
+  const geos = meshGeometries(THREE);
+  const shells = [];
+  const sculpted = (name, mat, radius, fraction = 0.016, minPoints = 1.3) => {
+    const mesh = new THREE.Mesh(geos[name], mat);
+    const shellMat = new THREE.ShaderMaterial({
+      vertexShader: SHELL_VERT, fragmentShader: SHELL_FRAG, side: THREE.BackSide,
+      uniforms: { color: { value: new THREE.Color(COLORS.encre) }, outline: { value: Math.max(fraction * radius, minPoints * worldPerPoint) } },
+    });
+    const shell = new THREE.Mesh(geos[name], shellMat);
+    mesh.add(shell);
+    shells.push(shell);
+    return mesh;
+  };
+
   /** Tourne l'objet pour que son axe z suive la normale de l'ellipsoïde. */
   const orient = (obj, p) => {
     const n = new THREE.Vector3(p[0] / BRAIN[0] ** 2, p[1] / BRAIN[1] ** 2, p[2] / BRAIN[2] ** 2).normalize();
@@ -160,12 +402,12 @@ export function createPlio(THREE, opts = {}) {
   };
 
   /** Tube fin le long d'une courbe, effilé aux deux bouts. */
-  const tube = (pts, radius, sides = 6) => {
+  const tube = (pts, radius, sides = 6, up = null) => {
     const pos = [], nor = [], idx = [];
     const v = pts.map((p) => new THREE.Vector3(...p));
     v.forEach((p, i) => {
       const t = v[Math.min(i + 1, v.length - 1)].clone().sub(v[Math.max(i - 1, 0)]).normalize();
-      const n1 = t.clone().cross(p.clone().normalize()).normalize();
+      const n1 = t.clone().cross(up || p.clone().normalize()).normalize();
       const n2 = n1.clone().cross(t);
       const f = i / (v.length - 1);
       const r = radius * Math.min(1, Math.sin(f * Math.PI) * 1.6 + 0.25);
@@ -197,53 +439,41 @@ export function createPlio(THREE, opts = {}) {
   root.add(body);
   body.add(torso);
 
-  // Jambes : moignons et pieds ovales.
-  const legGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.26, 24);
+  // Jambes trapues, légèrement effilées, et bottines au dessous plat.
   for (const side of [-1, 1]) {
-    const leg = new THREE.Mesh(legGeo, rose);
-    leg.position.set(side * 0.17, 0.19, 0);
-    outline(leg, 0.06);
+    const leg = sculpted('leg', rose, 0.065);
+    leg.position.set(side * 0.17, 0, 0);
     body.add(leg);
-    const foot = sphere(rose, [0.1, 0.055, 0.13]);
-    foot.position.set(side * 0.17, 0.05, 0.04);
-    outline(foot, 0.055);
+    const foot = sculpted('foot', rose, 0.075);
+    foot.position.set(side * 0.17, 0.043, 0.035);
+    foot.rotation.y = side * 0.12;
     body.add(foot);
   }
 
-  // Cerveau : ellipsoïde, 9 lobes par hémisphère, fissure centrale, 6 sillons par côté.
-  const brainMesh = sphere(rose, BRAIN);
-  outline(brainMesh, BRAIN[1]);
-  torso.add(brainMesh);
-  const lobes = [[40, 45, 0.17], [90, 45, 0.19], [140, 40, 0.18], [60, 75, 0.15], [140, 72, 0.15], [170, 50, 0.16], [75, 10, 0.17], [115, 5, 0.17], [160, 15, 0.16]];
-  const sulci = [[[62, 20], [64, 66]], [[113, 12], [112, 62]], [[60, 27], [150, 26]], [[95, 62], [125, 60]], [[155, 25], [157, 62]], [[40, 62], [48, 76]]];
-  for (const side of [-1, 1]) {
-    for (const [phi, theta, r] of lobes) {
-      const lobe = sphere(rose, [r, r, r]);
-      lobe.position.set(...onBrain(side * phi, theta, 0.84));
-      outline(lobe, r);
-      torso.add(lobe);
-    }
-    for (const [from, to] of sulci) {
-      const pts = [];
-      for (let i = 0; i <= 14; i++) {
-        const u = i / 14, wiggle = Math.sin(u * Math.PI * 3) * 4;
-        pts.push(onBrain(side * (from[0] + (to[0] - from[0]) * u + wiggle), from[1] + (to[1] - from[1]) * u - wiggle * 0.5, 1.06));
-      }
-      torso.add(new THREE.Mesh(tube(pts, 0.019), sillon));
-    }
-  }
-  const fissure = [];
-  for (let i = 0; i <= 20; i++) {
-    const u = i / 20, alpha = (50 + 100 * u) * Math.PI / 180;
-    fissure.push([Math.sin(u * Math.PI * 5) * 0.012, BRAIN[1] * Math.sin(alpha), BRAIN[2] * Math.cos(alpha)]);
-  }
-  torso.add(new THREE.Mesh(tube(fissure, 0.02), sillon));
+  // Cerveau : un maillage sculpté (circonvolutions, fissure, scissures, cervelet).
+  torso.add(sculpted('brain', brainSkin, BRAIN[1]));
 
   // Yeux, sourcils, joues, bras.
-  const eyes = [], pupils = [], brows = [], cheeks = [], arms = [];
+  const eyes = [], pupils = [], brows = [], arms = [];
   const glint = flat(COLORS.oeil);
-  const browGeo = new THREE.CapsuleGeometry(0.017, 0.12 - 0.034, 6, 12);
-  const limbGeo = new THREE.CapsuleGeometry(0.05, 0.24 - 0.1, 8, 16);
+  const zUp = new THREE.Vector3(0, 0, 1);
+  // Joues à deux couches : cœur franc et halo fondu, réglés ensemble par l'humeur.
+  const cheekCore = flat(COLORS.joue, { transparent: true, depthWrite: false });
+  const cheekHalo = flat(COLORS.joue, { transparent: true, depthWrite: false });
+  // Sourcil en arc, bouts un peu reculés pour épouser le front.
+  const browArc = [];
+  for (let i = 0; i <= 12; i++) {
+    const x = -0.065 + 0.13 * i / 12, u = x / 0.065;
+    browArc.push([x, 0.016 * (1 - u * u), -0.006 * u * u]);
+  }
+  const browGeo = tube(browArc, 0.019, 6, zUp);
+  // Trait de paupière sur le haut du blanc : lisible même œil mi-clos.
+  const lidArc = [];
+  for (let i = 0; i <= 12; i++) {
+    const a = (0.12 + 0.76 * i / 12) * Math.PI;
+    lidArc.push([0.103 * Math.cos(a), 0.113 * Math.sin(a), 0.014]);
+  }
+  const lidGeo = tube(lidArc, 0.011, 6, zUp);
   for (const side of [-1, 1]) {
     const eye = new THREE.Group();
     const anchor = surface(side * EYE_X, EYE_Y, -0.02);
@@ -257,6 +487,7 @@ export function createPlio(THREE, opts = {}) {
       const dot = sphere(glint, [r, r, r]); dot.position.set(x, y, 0.018); pupil.add(dot);
     }
     eye.add(pupil);
+    eye.add(new THREE.Mesh(lidGeo, ink));
     torso.add(eye);
     eyes.push(eye); pupils.push(pupil);
 
@@ -268,23 +499,31 @@ export function createPlio(THREE, opts = {}) {
     torso.add(brow);
     brows.push({ node: brow, bar, side });
 
-    const cheek = sphere(flat(COLORS.joue, { transparent: true, depthWrite: false }), [0.075, 0.045, 0.02]);
+    const cheek = new THREE.Group();
+    cheek.add(sphere(cheekCore, [0.07, 0.042, 0.02]));
+    const soft = sphere(cheekHalo, [0.092, 0.058, 0.016]);
+    soft.position.z = -0.003;
+    cheek.add(soft);
     const cAnchor = surface(side * 0.29, MOUTH_Y + 0.03, 0.002);
     cheek.position.set(...cAnchor); orient(cheek, cAnchor);
     torso.add(cheek);
-    cheeks.push(cheek);
 
-    // Bras courts, sans coude, main ronde ; pivot sur les flancs à mi-hauteur.
+    // Bras courts, sans coude, effilés ; pivot sur les flancs à mi-hauteur.
     const arm = new THREE.Group();
     arm.rotation.order = 'YXZ';
     arm.position.set(side * 0.56, -0.08, 0);
-    const limb = new THREE.Mesh(limbGeo, rose);
-    limb.position.y = -0.12;
-    outline(limb, 0.05);
-    arm.add(limb);
-    const hand = sphere(rose, [0.07, 0.07, 0.07]);
-    hand.position.y = -0.26;
-    outline(hand, 0.07);
+    arm.add(sculpted('arm', rose, 0.05));
+    // Moufle : paume aplatie et pouce tourné vers l'avant.
+    const hand = new THREE.Group();
+    hand.position.y = -0.27;
+    const palm = sphere(rose, [0.068, 0.074, 0.056]);
+    outline(palm, 0.062);
+    hand.add(palm);
+    const thumb = sphere(rose, [0.026, 0.038, 0.027]);
+    thumb.position.set(-side * 0.046, 0.016, 0.03);
+    thumb.rotation.z = side * 0.55;
+    outline(thumb, 0.03);
+    hand.add(thumb);
     arm.add(hand);
     torso.add(arm);
     arms.push({ node: arm, side });
@@ -297,25 +536,39 @@ export function createPlio(THREE, opts = {}) {
   const fillMouth = (node, shape) => {
     for (const c of [...node.children]) { node.remove(c); c.geometry.dispose(); }
     const add = (geo, hex, z = 0) => { const m = new THREE.Mesh(geo, flat(hex, { side: THREE.DoubleSide })); m.position.z = z; node.add(m); };
-    const stroke = (curve) => add(new THREE.TubeGeometry(curve, 24, 0.012, 8, false), COLORS.encre);
+    const stroke = (curve, width = 0.024, closed = false) => add(new THREE.TubeGeometry(curve, 24, width / 2, 8, closed), COLORS.encre);
     const V = (x, y) => new THREE.Vector3(x, y, 0);
     switch (shape.kind) {
       case 'smile': case 'frown': {
+        const { w, d } = shape;
         const sign = shape.kind === 'frown' ? 1 : -1;
-        stroke(new THREE.QuadraticBezierCurve3(V(-shape.w / 2, 0), V(0, sign * shape.d * 2), V(shape.w / 2, 0)));
+        stroke(new THREE.QuadraticBezierCurve3(V(-w / 2, 0), V(0, sign * d * 2), V(w / 2, 0)));
+        if (sign < 0) {
+          // Fossettes aux coins du sourire.
+          for (const x of [-w / 2, w / 2]) {
+            const s = x < 0 ? -1 : 1;
+            stroke(new THREE.QuadraticBezierCurve3(V(x * 1.04 - 0.004 * s, 0.013), V(x * 1.1, 0), V(x * 1.04 - 0.002 * s, -0.011)), 0.012);
+          }
+        }
         break;
       }
       case 'line':
         stroke(new THREE.LineCurve3(V(-shape.w / 2 + 0.03, -shape.slant), V(shape.w / 2 + 0.03, shape.slant)));
         break;
       case 'open': {
+        const { w, h } = shape;
         const s = new THREE.Shape();
-        s.moveTo(-shape.w / 2, 0);
-        s.quadraticCurveTo(0, 0.012, shape.w / 2, 0);
-        s.quadraticCurveTo(0, -shape.h * 2, -shape.w / 2, 0);
+        s.moveTo(-w / 2, 0);
+        s.quadraticCurveTo(0, 0.012, w / 2, 0);
+        s.quadraticCurveTo(0, -h * 2, -w / 2, 0);
+        // Lèvre encre autour, posée derrière l'intérieur de la bouche.
+        const lip = new THREE.CurvePath();
+        lip.add(new THREE.QuadraticBezierCurve3(V(-w / 2, 0), V(0, 0.012), V(w / 2, 0)));
+        lip.add(new THREE.QuadraticBezierCurve3(V(w / 2, 0), V(0, -h * 2), V(-w / 2, 0)));
+        add(new THREE.TubeGeometry(lip, 48, 0.008, 8, true), COLORS.encre, -0.002);
         add(new THREE.ShapeGeometry(s, 24), COLORS.bouche);
         const tongue = new THREE.Shape();
-        tongue.absellipse(0, -shape.h * 0.62, shape.w * 0.21, shape.h * 0.21, 0, Math.PI * 2);
+        tongue.absellipse(0, -h * 0.62, w * 0.21, h * 0.21, 0, Math.PI * 2);
         add(new THREE.ShapeGeometry(tongue, 24), COLORS.langue, 0.002);
         break;
       }
@@ -503,9 +756,10 @@ export function createPlio(THREE, opts = {}) {
     }
     for (const b of brows) {
       b.node.position.set(...surface(b.side * EYE_X, EYE_Y + 0.15 + p.browY, 0.005));
-      b.bar.rotation.z = Math.PI / 2 + b.side * -p.browAngle;
+      b.bar.rotation.z = b.side * -p.browAngle;
     }
-    for (const c of cheeks) c.material.opacity = Math.min(Math.max(p.cheek, 0), 1);
+    const cheek = Math.min(Math.max(p.cheek, 0), 1);
+    cheekCore.opacity = cheek; cheekHalo.opacity = 0.45 * cheek;
     for (const arm of arms) {
       const v = arm.side < 0 ? p.armL : p.armR;
       arm.node.rotation.set(-v[1], 0, arm.side * v[0]);
@@ -554,7 +808,7 @@ export function createPlio(THREE, opts = {}) {
       talk = { start: time, duration: Math.min(text.length * 0.055, 3) };
     },
     update,
-    setOutline(on) { for (const h of hulls) h.visible = on; },
+    setOutline(on) { for (const h of [...hulls, ...shells]) h.visible = on; },
     setHalftone(on) { for (const m of toonMats) if (m.userData.halftone) m.uniforms.halftone.value = on && slotSize >= 72 ? 1 : 0; },
   };
 }
