@@ -107,6 +107,8 @@ for (const a of document.querySelectorAll('[data-lang]')) {{
     values = {
         'lang': code, 'dir': direction, 'root': depth, 'canonical': canonical, 'og_locale': og,
         'alternates': '\n'.join(alternates), 'footer': footer, 'days': days,
+        # Captures de l'app : en français sur la page française, en anglais ailleurs.
+        'shots': 'fr' if code == 'fr' else 'en',
         'redirect': REDIRECT % json.dumps(paths) if (code == 'fr' and page == 'index.html') else '',
         'script_json': json.dumps({k: t[k] for k in SCRIPT_KEYS}, ensure_ascii=False).replace('</', '<\\/'),
     }

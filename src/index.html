@@ -180,28 +180,37 @@
   <div class="cards">
     <article class="card">
       <div class="card-chip" style="background-color:var(--fb-cat-calcul)" aria-hidden="true"></div>
-      <div class="card-name">{{t.calc_name}}</div>
-      <div class="card-meta">{{t.calc_meta}}</div>
-      <p class="card-text" style="margin:0">{{t.calc_text}}</p>
-    </article>
-    <article class="card">
-      <div class="card-chip" style="background-color:var(--fb-cat-vitesse)" aria-hidden="true"></div>
-      <div class="card-name">Stroop</div>
-      <div class="card-meta">{{t.stroop_meta}}</div>
-      <p class="card-text" style="margin:0">{{t.stroop_text}}</p>
-    </article>
-    <article class="card">
-      <div class="card-chip" style="background-color:var(--fb-cat-memoire)" aria-hidden="true"></div>
-      <div class="card-name">{{t.memory_name}}</div>
-      <div class="card-meta">{{t.memory_meta}}</div>
-      <p class="card-text" style="margin:0">{{t.memory_text}}</p>
+      <h3 class="card-name">{{t.fam_calc_name}}</h3>
+      <div class="card-meta">{{t.fam_calc_games}}</div>
+      <p class="card-text">{{t.fam_calc_text}}</p>
     </article>
     <article class="card">
       <div class="card-chip" style="background-color:var(--fb-cat-logique)" aria-hidden="true"></div>
-      <div class="card-name">{{t.mirror_name}}</div>
-      <div class="card-meta">{{t.mirror_meta}}</div>
-      <p class="card-text" style="margin:0">{{t.mirror_text}}</p>
+      <h3 class="card-name">{{t.fam_att_name}}</h3>
+      <div class="card-meta">{{t.fam_att_games}}</div>
+      <p class="card-text">{{t.fam_att_text}}</p>
     </article>
+    <article class="card">
+      <div class="card-chip" style="background-color:var(--fb-cat-memoire)" aria-hidden="true"></div>
+      <h3 class="card-name">{{t.fam_mem_name}}</h3>
+      <div class="card-meta">{{t.fam_mem_games}}</div>
+      <p class="card-text">{{t.fam_mem_text}}</p>
+    </article>
+    <article class="card">
+      <div class="card-chip" style="background-color:var(--fb-cat-lecture)" aria-hidden="true"></div>
+      <h3 class="card-name">{{t.fam_space_name}}</h3>
+      <div class="card-meta">{{t.fam_space_games}}</div>
+      <p class="card-text">{{t.fam_space_text}}</p>
+    </article>
+  </div>
+  <div class="section-head">
+    <div class="eyebrow">{{t.shots_eyebrow}}</div>
+    <h2 class="h2">{{t.shots_title}}</h2>
+  </div>
+  <div class="shots">
+    <img src="{{root}}img/shots/{{shots}}/calcul.webp" alt="{{t.shot_calc_alt}}" width="540" height="1098" loading="lazy" decoding="async">
+    <img src="{{root}}img/shots/{{shots}}/billes.webp" alt="{{t.shot_billes_alt}}" width="540" height="1098" loading="lazy" decoding="async">
+    <img src="{{root}}img/shots/{{shots}}/result.webp" alt="{{t.shot_result_alt}}" width="540" height="1098" loading="lazy" decoding="async">
   </div>
 </section>
 
@@ -256,6 +265,23 @@
   </div>
 </section>
 
+<section class="band">
+  <div class="wrap section" style="display:grid;gap:32px">
+    <div class="section-head">
+      <div class="eyebrow">{{t.extras_eyebrow}}</div>
+      <h2 class="h2">{{t.extras_title}}</h2>
+    </div>
+    <ul class="extras">
+      <li>{{t.extra_1}}</li>
+      <li>{{t.extra_2}}</li>
+      <li>{{t.extra_3}}</li>
+      <li>{{t.extra_4}}</li>
+      <li>{{t.extra_5}}</li>
+      <li>{{t.extra_6}}</li>
+    </ul>
+  </div>
+</section>
+
 <section id="prix" class="wrap price-wrap">
   <div class="price">
     <div class="price-copy">
@@ -266,12 +292,27 @@
         <li><span class="check" aria-hidden="true"></span>{{t.perk_1}}</li>
         <li><span class="check" aria-hidden="true"></span>{{t.perk_2}}</li>
         <li><span class="check" aria-hidden="true"></span>{{t.perk_3}}</li>
+        <li><span class="check" aria-hidden="true"></span>{{t.perk_4}}</li>
       </ul>
       <a class="btn" data-store data-cheer href="#prix" style="margin-top:8px">{{t.cta_download}}</a>
     </div>
     <div class="price-plio">
       <plio-3d id="price-plio" mood="fier" size="280" follow></plio-3d>
     </div>
+  </div>
+</section>
+
+<section id="faq" class="wrap section" style="display:grid;gap:32px">
+  <div class="section-head">
+    <div class="eyebrow">{{t.faq_eyebrow}}</div>
+    <h2 class="h2">{{t.faq_title}}</h2>
+  </div>
+  <div class="faq">
+    <details><summary>{{t.faq_q1}}</summary><p>{{t.faq_a1}}</p></details>
+    <details><summary>{{t.faq_q2}}</summary><p>{{t.faq_a2}}</p></details>
+    <details><summary>{{t.faq_q3}}</summary><p>{{t.faq_a3}}</p></details>
+    <details><summary>{{t.faq_q4}}</summary><p>{{t.faq_a4}}</p></details>
+    <details><summary>{{t.faq_q5}}</summary><p>{{t.faq_a5}}</p></details>
   </div>
 </section>
 
