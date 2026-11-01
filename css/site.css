@@ -57,15 +57,15 @@ img { max-width: 100%; }
 .device-col { display: grid; gap: 28px; justify-items: center; align-content: center; min-height: 540px; }
 .tabs { display: flex; gap: 4px; padding: 4px; background: var(--surface-pressed); border: var(--ink-line); border-radius: var(--radius-pill); }
 .tab {
-  border: 0; cursor: pointer; min-height: 40px; padding: 0 16px; border-radius: var(--radius-pill);
+  border: 0; cursor: pointer; min-height: 44px; padding: 0 16px; border-radius: var(--radius-pill);
   font: 700 14px/1 var(--font-rounded); background: transparent; color: var(--text-2);
 }
 .tab[aria-selected="true"] { background: var(--surface); color: var(--text-1); box-shadow: var(--shadow-1); }
-.device-note { font: var(--type-footnote); color: var(--text-3); text-align: center; }
+.device-note { font: var(--type-footnote); color: var(--text-2); text-align: center; }
 .steps { display: grid; gap: 24px; }
 .step { display: grid; grid-template-columns: 44px 1fr; gap: 16px; align-items: start; }
 .step-n { width: 44px; height: 44px; border-radius: 50%; background: var(--surface); border: var(--ink-line); box-shadow: var(--shadow-1); display: grid; place-items: center; font: 900 18px/1 var(--font-rounded); }
-.step-t { font: 700 20px/25px var(--font-rounded); }
+.step-t { margin: 0; font: 700 20px/25px var(--font-rounded); }
 .step-d { font: var(--type-callout); color: var(--text-2); text-wrap: pretty; }
 .how-copy { display: grid; gap: 32px; }
 
@@ -215,7 +215,8 @@ img { max-width: 100%; }
 @media (max-width: 640px) {
   .shots { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
   .wrap { padding-inline: 16px; }
-  .nav-links a:not(.btn) { display: none; }
+  .nav-links { gap: 14px; font-size: 14px; }
+  .nav-links .btn { display: none; }
   .section { padding-top: 64px; padding-bottom: 64px; }
   .hero { padding-top: 16px; padding-bottom: 56px; gap: 24px; }
   .hero-stage { min-height: 340px; }
@@ -231,7 +232,8 @@ img { max-width: 100%; }
 }
 
 /* Choix de la langue, en pied de page. */
-.footer .langs { display: flex; flex-wrap: wrap; gap: 6px 14px; width: 100%; font: var(--type-footnote); }
+.footer .langs { display: flex; flex-wrap: wrap; gap: 4px 6px; width: 100%; font: var(--type-footnote); }
+.footer .langs a { display: inline-flex; align-items: center; min-height: 32px; padding: 0 6px; }
 .footer .langs a { color: var(--text-3); }
 .footer .langs a[aria-current] { color: var(--text-1); font-weight: 700; }
 

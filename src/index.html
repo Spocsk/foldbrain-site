@@ -16,14 +16,11 @@
 <link rel="stylesheet" href="{{root}}css/site.css">
 {{redirect}}
 <script type="importmap">
-{
-  "imports": { "three": "https://unpkg.com/three@0.184.0/build/three.module.js" },
-  "integrity": {
-    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
-    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT"
-  }
-}
+{ "imports": { "three": "./{{root}}plio/vendor/three.module.js" } }
 </script>
+<link rel="modulepreload" href="{{root}}plio/vendor/three.module.js">
+<link rel="modulepreload" href="{{root}}plio/vendor/three.core.js">
+<link rel="modulepreload" href="{{root}}plio/plio-model.js">
 <script type="application/json" id="i18n">{{script_json}}</script>
 <script type="module" src="{{root}}plio/plio-3d.js"></script>
 <script type="module" src="{{root}}js/site.js"></script>
@@ -54,8 +51,8 @@
   </div>
   <div class="hero-stage">
     <div class="hero-disc" aria-hidden="true"></div>
-    <div class="bubble" id="bubble" aria-live="polite">{{t.plio_hello}}</div>
-    <plio-3d id="hero-plio" mood="content" size="360" follow anim="joie" title="{{t.plio_click}}"></plio-3d>
+    <div class="bubble" id="bubble">{{t.plio_hello}}</div>
+    <plio-3d id="hero-plio" mood="content" size="360" follow anim="joie" title="{{t.plio_click}}" label="{{t.plio_alt}}" fallback="{{root}}img/plio.webp"></plio-3d>
   </div>
 </section>
 
@@ -148,15 +145,15 @@
       <div class="steps">
         <div class="step">
           <div class="step-n">1</div>
-          <div><div class="step-t">{{t.step1_title}}</div><div class="step-d" id="step-1">{{t.duo_step1}}</div></div>
+          <div><h3 class="step-t">{{t.step1_title}}</h3><div class="step-d" id="step-1">{{t.duo_step1}}</div></div>
         </div>
         <div class="step">
           <div class="step-n">2</div>
-          <div><div class="step-t">{{t.step2_title}}</div><div class="step-d" id="step-2">{{t.duo_step2}}</div></div>
+          <div><h3 class="step-t">{{t.step2_title}}</h3><div class="step-d" id="step-2">{{t.duo_step2}}</div></div>
         </div>
         <div class="step">
           <div class="step-n">3</div>
-          <div><div class="step-t">{{t.step3_title}}</div><div class="step-d">{{t.step3_text}}</div></div>
+          <div><h3 class="step-t">{{t.step3_title}}</h3><div class="step-d">{{t.step3_text}}</div></div>
         </div>
       </div>
     </div>
@@ -288,7 +285,7 @@
       <a class="btn" data-store data-cheer href="#prix" style="margin-top:8px">{{t.cta_download}}</a>
     </div>
     <div class="price-plio">
-      <plio-3d id="price-plio" mood="fier" size="280" follow></plio-3d>
+      <plio-3d id="price-plio" mood="fier" size="280" follow aria-hidden="true" fallback="{{root}}img/plio.webp"></plio-3d>
     </div>
   </div>
 </section>

@@ -61,14 +61,11 @@
 <link rel="stylesheet" href="../css/site.css">
 
 <script type="importmap">
-{
-  "imports": { "three": "https://unpkg.com/three@0.184.0/build/three.module.js" },
-  "integrity": {
-    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
-    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT"
-  }
-}
+{ "imports": { "three": "./../plio/vendor/three.module.js" } }
 </script>
+<link rel="modulepreload" href="../plio/vendor/three.module.js">
+<link rel="modulepreload" href="../plio/vendor/three.core.js">
+<link rel="modulepreload" href="../plio/plio-model.js">
 <script type="application/json" id="i18n">{"duo_note": "打开的iPhone Duo · 一块屏幕，从中间折叠", "duo_title": "题目在折痕上方，你的笔在下方。", "duo_step1": "题目显示在折痕上方的上半屏，无需任何操作。", "duo_step2": "用手指或触控笔，写在下半屏的方格写字板上。", "phone_note": "iPhone · 题目在上，写字板在下", "phone_title": "题目在上方，你的笔在下方。", "phone_step1": "题目显示在屏幕上方，无需任何操作。", "phone_step2": "用手指或触控笔，用拇指写在下方的方格写字板上。", "pad_note": "iPad + Apple Pencil · 题目在左，写字板在右", "pad_title": "题目在左边，你的笔在右边。", "pad_step1": "题目显示在屏幕左侧，无需任何操作。", "pad_step2": "用手指或触控笔，用Apple Pencil写在右侧的大写字板上。", "plio_cheer": "好主意。我等你。", "plio_tickle": "好痒呀。"}</script>
 <script type="module" src="../plio/plio-3d.js"></script>
 <script type="module" src="../js/site.js"></script>
@@ -99,8 +96,8 @@
   </div>
   <div class="hero-stage">
     <div class="hero-disc" aria-hidden="true"></div>
-    <div class="bubble" id="bubble" aria-live="polite">你好，我是Plio。一起练练吧？</div>
-    <plio-3d id="hero-plio" mood="content" size="360" follow anim="joie" title="点击Plio"></plio-3d>
+    <div class="bubble" id="bubble">你好，我是Plio。一起练练吧？</div>
+    <plio-3d id="hero-plio" mood="content" size="360" follow anim="joie" title="点击Plio" label="Plio，一个粉色的小脑袋，Fold Brain 的吉祥物" fallback="../img/plio.webp"></plio-3d>
   </div>
 </section>
 
@@ -193,15 +190,15 @@
       <div class="steps">
         <div class="step">
           <div class="step-n">1</div>
-          <div><div class="step-t">阅读题目</div><div class="step-d" id="step-1">题目显示在折痕上方的上半屏，无需任何操作。</div></div>
+          <div><h3 class="step-t">阅读题目</h3><div class="step-d" id="step-1">题目显示在折痕上方的上半屏，无需任何操作。</div></div>
         </div>
         <div class="step">
           <div class="step-n">2</div>
-          <div><div class="step-t">用手指作答</div><div class="step-d" id="step-2">用手指或触控笔，写在下半屏的方格写字板上。</div></div>
+          <div><h3 class="step-t">用手指作答</h3><div class="step-d" id="step-2">用手指或触控笔，写在下半屏的方格写字板上。</div></div>
         </div>
         <div class="step">
           <div class="step-n">3</div>
-          <div><div class="step-t">Plio回应</div><div class="step-d">对了，或者差一点，并告诉你正确答案。然后进入下一项练习。</div></div>
+          <div><h3 class="step-t">Plio回应</h3><div class="step-d">对了，或者差一点，并告诉你正确答案。然后进入下一项练习。</div></div>
         </div>
       </div>
     </div>
@@ -339,7 +336,7 @@
       <a class="btn" data-store data-cheer href="#prix" style="margin-top:8px">在App Store下载</a>
     </div>
     <div class="price-plio">
-      <plio-3d id="price-plio" mood="fier" size="280" follow></plio-3d>
+      <plio-3d id="price-plio" mood="fier" size="280" follow aria-hidden="true" fallback="../img/plio.webp"></plio-3d>
     </div>
   </div>
 </section>

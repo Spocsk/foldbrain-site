@@ -1,0 +1,21 @@
+# Vérifie que les pages commitées correspondent aux gabarits et aux traductions :
+# toute modification de src/ ou i18n/ doit être suivie de `python3 tools/build.py`.
+name: Pages générées à jour
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # lastmod du sitemap = date du dernier commit
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Régénérer le site
+        run: python3 tools/build.py
+      - name: Aucune différence avec les fichiers commités
+        run: git diff --exit-code

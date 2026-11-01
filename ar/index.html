@@ -61,14 +61,11 @@
 <link rel="stylesheet" href="../css/site.css">
 
 <script type="importmap">
-{
-  "imports": { "three": "https://unpkg.com/three@0.184.0/build/three.module.js" },
-  "integrity": {
-    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
-    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT"
-  }
-}
+{ "imports": { "three": "./../plio/vendor/three.module.js" } }
 </script>
+<link rel="modulepreload" href="../plio/vendor/three.module.js">
+<link rel="modulepreload" href="../plio/vendor/three.core.js">
+<link rel="modulepreload" href="../plio/plio-model.js">
 <script type="application/json" id="i18n">{"duo_note": "iPhone Duo مفتوح · شاشة واحدة مطويّة في المنتصف", "duo_title": "اللعبة فوق الطيّة، وقلمك تحتها.", "duo_step1": "تظهر اللعبة على النصف العلوي، فوق الطيّة، دون أي حركة منك.", "duo_step2": "بإصبعك أو بالقلم، على اللوح المربّع في النصف السفلي.", "phone_note": "iPhone · اللعبة في الأعلى، واللوح في الأسفل", "phone_title": "اللعبة في الأعلى، وقلمك في الأسفل.", "phone_step1": "تظهر اللعبة أعلى الشاشة، دون أي حركة منك.", "phone_step2": "بإصبعك أو بالقلم، على اللوح المربّع في الأسفل، بإبهامك.", "pad_note": "iPad + Apple Pencil · اللعبة على اليسار، واللوح على اليمين", "pad_title": "اللعبة على اليسار، وقلمك على اليمين.", "pad_step1": "تظهر اللعبة في الجزء الأيسر من الشاشة، دون أي حركة منك.", "pad_step2": "بإصبعك أو بالقلم، على اللوح الكبير على اليمين، بـ Apple Pencil.", "plio_cheer": "فكرة رائعة. أنا بانتظارك.", "plio_tickle": "أنت تدغدغني."}</script>
 <script type="module" src="../plio/plio-3d.js"></script>
 <script type="module" src="../js/site.js"></script>
@@ -99,8 +96,8 @@
   </div>
   <div class="hero-stage">
     <div class="hero-disc" aria-hidden="true"></div>
-    <div class="bubble" id="bubble" aria-live="polite">أهلًا، أنا Plio. هل نتدرّب؟</div>
-    <plio-3d id="hero-plio" mood="content" size="360" follow anim="joie" title="انقر على Plio"></plio-3d>
+    <div class="bubble" id="bubble">أهلًا، أنا Plio. هل نتدرّب؟</div>
+    <plio-3d id="hero-plio" mood="content" size="360" follow anim="joie" title="انقر على Plio" label="Plio، دماغ وردي صغير، تميمة Fold Brain" fallback="../img/plio.webp"></plio-3d>
   </div>
 </section>
 
@@ -193,15 +190,15 @@
       <div class="steps">
         <div class="step">
           <div class="step-n">1</div>
-          <div><div class="step-t">اقرأ السؤال</div><div class="step-d" id="step-1">تظهر اللعبة على النصف العلوي، فوق الطيّة، دون أي حركة منك.</div></div>
+          <div><h3 class="step-t">اقرأ السؤال</h3><div class="step-d" id="step-1">تظهر اللعبة على النصف العلوي، فوق الطيّة، دون أي حركة منك.</div></div>
         </div>
         <div class="step">
           <div class="step-n">2</div>
-          <div><div class="step-t">أجب بإصبعك</div><div class="step-d" id="step-2">بإصبعك أو بالقلم، على اللوح المربّع في النصف السفلي.</div></div>
+          <div><h3 class="step-t">أجب بإصبعك</h3><div class="step-d" id="step-2">بإصبعك أو بالقلم، على اللوح المربّع في النصف السفلي.</div></div>
         </div>
         <div class="step">
           <div class="step-n">3</div>
-          <div><div class="step-t">Plio يتفاعل</div><div class="step-d">صحيحة، أو ليست تمامًا، مع الإجابة الصحيحة. ثم التمرين التالي.</div></div>
+          <div><h3 class="step-t">Plio يتفاعل</h3><div class="step-d">صحيحة، أو ليست تمامًا، مع الإجابة الصحيحة. ثم التمرين التالي.</div></div>
         </div>
       </div>
     </div>
@@ -339,7 +336,7 @@
       <a class="btn" data-store data-cheer href="#prix" style="margin-top:8px">نزّله من App Store</a>
     </div>
     <div class="price-plio">
-      <plio-3d id="price-plio" mood="fier" size="280" follow></plio-3d>
+      <plio-3d id="price-plio" mood="fier" size="280" follow aria-hidden="true" fallback="../img/plio.webp"></plio-3d>
     </div>
   </div>
 </section>

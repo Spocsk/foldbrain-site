@@ -61,14 +61,11 @@
 <link rel="stylesheet" href="../css/site.css">
 
 <script type="importmap">
-{
-  "imports": { "three": "https://unpkg.com/three@0.184.0/build/three.module.js" },
-  "integrity": {
-    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
-    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT"
-  }
-}
+{ "imports": { "three": "./../plio/vendor/three.module.js" } }
 </script>
+<link rel="modulepreload" href="../plio/vendor/three.module.js">
+<link rel="modulepreload" href="../plio/vendor/three.core.js">
+<link rel="modulepreload" href="../plio/plio-model.js">
 <script type="application/json" id="i18n">{"duo_note": "開いたiPhone Duo · 中央で折れる1枚の画面", "duo_title": "問題は折り目の上、ペンは下。", "duo_step1": "問題は折り目の上、画面の上半分に表示されます。操作は不要です。", "duo_step2": "指でもペンでも、下半分の方眼ボードに書きます。", "phone_note": "iPhone · 上に問題、下にボード", "phone_title": "問題は上、ペンは下。", "phone_step1": "問題は画面の上に表示されます。操作は不要です。", "phone_step2": "指でもペンでも、下の方眼ボードに親指で書けます。", "pad_note": "iPad + Apple Pencil · 左に問題、右にボード", "pad_title": "問題は左、ペンは右。", "pad_step1": "問題は画面の左側に表示されます。操作は不要です。", "pad_step2": "指でもペンでも、右側の大きなボードにApple Pencilで書けます。", "plio_cheer": "いいですね。待っていますよ。", "plio_tickle": "くすぐったいです。"}</script>
 <script type="module" src="../plio/plio-3d.js"></script>
 <script type="module" src="../js/site.js"></script>
@@ -99,8 +96,8 @@
   </div>
   <div class="hero-stage">
     <div class="hero-disc" aria-hidden="true"></div>
-    <div class="bubble" id="bubble" aria-live="polite">こんにちは、ぼくはPlioです。いっしょにトレーニングしませんか？</div>
-    <plio-3d id="hero-plio" mood="content" size="360" follow anim="joie" title="Plioをクリック"></plio-3d>
+    <div class="bubble" id="bubble">こんにちは、ぼくはPlioです。いっしょにトレーニングしませんか？</div>
+    <plio-3d id="hero-plio" mood="content" size="360" follow anim="joie" title="Plioをクリック" label="Fold Brain のマスコット、ピンクの小さな脳 Plio" fallback="../img/plio.webp"></plio-3d>
   </div>
 </section>
 
@@ -193,15 +190,15 @@
       <div class="steps">
         <div class="step">
           <div class="step-n">1</div>
-          <div><div class="step-t">問題を読む</div><div class="step-d" id="step-1">問題は折り目の上、画面の上半分に表示されます。操作は不要です。</div></div>
+          <div><h3 class="step-t">問題を読む</h3><div class="step-d" id="step-1">問題は折り目の上、画面の上半分に表示されます。操作は不要です。</div></div>
         </div>
         <div class="step">
           <div class="step-n">2</div>
-          <div><div class="step-t">指で答える</div><div class="step-d" id="step-2">指でもペンでも、下半分の方眼ボードに書きます。</div></div>
+          <div><h3 class="step-t">指で答える</h3><div class="step-d" id="step-2">指でもペンでも、下半分の方眼ボードに書きます。</div></div>
         </div>
         <div class="step">
           <div class="step-n">3</div>
-          <div><div class="step-t">Plioが反応</div><div class="step-d">正解か、おしいか。正しい答えといっしょに教えてくれます。そして次の種目へ。</div></div>
+          <div><h3 class="step-t">Plioが反応</h3><div class="step-d">正解か、おしいか。正しい答えといっしょに教えてくれます。そして次の種目へ。</div></div>
         </div>
       </div>
     </div>
@@ -339,7 +336,7 @@
       <a class="btn" data-store data-cheer href="#prix" style="margin-top:8px">App Storeでダウンロード</a>
     </div>
     <div class="price-plio">
-      <plio-3d id="price-plio" mood="fier" size="280" follow></plio-3d>
+      <plio-3d id="price-plio" mood="fier" size="280" follow aria-hidden="true" fallback="../img/plio.webp"></plio-3d>
     </div>
   </div>
 </section>

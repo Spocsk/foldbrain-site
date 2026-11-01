@@ -61,14 +61,11 @@
 <link rel="stylesheet" href="../css/site.css">
 
 <script type="importmap">
-{
-  "imports": { "three": "https://unpkg.com/three@0.184.0/build/three.module.js" },
-  "integrity": {
-    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
-    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT"
-  }
-}
+{ "imports": { "three": "./../plio/vendor/three.module.js" } }
 </script>
+<link rel="modulepreload" href="../plio/vendor/three.module.js">
+<link rel="modulepreload" href="../plio/vendor/three.core.js">
+<link rel="modulepreload" href="../plio/plio-model.js">
 <script type="application/json" id="i18n">{"duo_note": "کھلا iPhone Duo · ایک ہی اسکرین، درمیان سے مڑی ہوئی", "duo_title": "کھیل موڑ کے اوپر، تمہاری پنسل نیچے۔", "duo_step1": "کھیل اوپر والے آدھے حصے پر، موڑ کے اوپر، بغیر کسی حرکت کے نظر آتا ہے۔", "duo_step2": "انگلی یا اسٹائلس سے، نیچے والے آدھے حصے کی خانوں والی تختی پر۔", "phone_note": "iPhone · کھیل اوپر، تختی نیچے", "phone_title": "کھیل اوپر، تمہاری پنسل نیچے۔", "phone_step1": "کھیل اسکرین کے اوپر، بغیر کسی حرکت کے نظر آتا ہے۔", "phone_step2": "انگلی یا اسٹائلس سے، نیچے خانوں والی تختی پر، انگوٹھے کی پہنچ میں۔", "pad_note": "iPad + Apple Pencil · کھیل بائیں، تختی دائیں", "pad_title": "کھیل بائیں، تمہاری پنسل دائیں۔", "pad_step1": "کھیل اسکرین کے بائیں حصے پر، بغیر کسی حرکت کے نظر آتا ہے۔", "pad_step2": "انگلی یا اسٹائلس سے، دائیں طرف کی بڑی تختی پر، Apple Pencil کے ساتھ۔", "plio_cheer": "اچھا خیال ہے۔ میں انتظار کر رہا ہوں۔", "plio_tickle": "تم مجھے گدگدی کر رہے ہو۔"}</script>
 <script type="module" src="../plio/plio-3d.js"></script>
 <script type="module" src="../js/site.js"></script>
@@ -99,8 +96,8 @@
   </div>
   <div class="hero-stage">
     <div class="hero-disc" aria-hidden="true"></div>
-    <div class="bubble" id="bubble" aria-live="polite">سلام، میں Plio ہوں۔ ورزش کریں؟</div>
-    <plio-3d id="hero-plio" mood="content" size="360" follow anim="joie" title="Plio پر کلک کرو"></plio-3d>
+    <div class="bubble" id="bubble">سلام، میں Plio ہوں۔ ورزش کریں؟</div>
+    <plio-3d id="hero-plio" mood="content" size="360" follow anim="joie" title="Plio پر کلک کرو" label="Plio، ایک چھوٹا گلابی دماغ، Fold Brain کا میسکوٹ" fallback="../img/plio.webp"></plio-3d>
   </div>
 </section>
 
@@ -193,15 +190,15 @@
       <div class="steps">
         <div class="step">
           <div class="step-n">1</div>
-          <div><div class="step-t">سوال پڑھو</div><div class="step-d" id="step-1">کھیل اوپر والے آدھے حصے پر، موڑ کے اوپر، بغیر کسی حرکت کے نظر آتا ہے۔</div></div>
+          <div><h3 class="step-t">سوال پڑھو</h3><div class="step-d" id="step-1">کھیل اوپر والے آدھے حصے پر، موڑ کے اوپر، بغیر کسی حرکت کے نظر آتا ہے۔</div></div>
         </div>
         <div class="step">
           <div class="step-n">2</div>
-          <div><div class="step-t">انگلی سے جواب دو</div><div class="step-d" id="step-2">انگلی یا اسٹائلس سے، نیچے والے آدھے حصے کی خانوں والی تختی پر۔</div></div>
+          <div><h3 class="step-t">انگلی سے جواب دو</h3><div class="step-d" id="step-2">انگلی یا اسٹائلس سے، نیچے والے آدھے حصے کی خانوں والی تختی پر۔</div></div>
         </div>
         <div class="step">
           <div class="step-n">3</div>
-          <div><div class="step-t">Plio ردعمل دیتا ہے</div><div class="step-d">درست، یا تھوڑا سا غلط، صحیح جواب کے ساتھ۔ پھر اگلی مشق۔</div></div>
+          <div><h3 class="step-t">Plio ردعمل دیتا ہے</h3><div class="step-d">درست، یا تھوڑا سا غلط، صحیح جواب کے ساتھ۔ پھر اگلی مشق۔</div></div>
         </div>
       </div>
     </div>
@@ -339,7 +336,7 @@
       <a class="btn" data-store data-cheer href="#prix" style="margin-top:8px">App Store سے ڈاؤن لوڈ کریں</a>
     </div>
     <div class="price-plio">
-      <plio-3d id="price-plio" mood="fier" size="280" follow></plio-3d>
+      <plio-3d id="price-plio" mood="fier" size="280" follow aria-hidden="true" fallback="../img/plio.webp"></plio-3d>
     </div>
   </div>
 </section>

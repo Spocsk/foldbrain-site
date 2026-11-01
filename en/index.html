@@ -61,14 +61,11 @@
 <link rel="stylesheet" href="../css/site.css">
 
 <script type="importmap">
-{
-  "imports": { "three": "https://unpkg.com/three@0.184.0/build/three.module.js" },
-  "integrity": {
-    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
-    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT"
-  }
-}
+{ "imports": { "three": "./../plio/vendor/three.module.js" } }
 </script>
+<link rel="modulepreload" href="../plio/vendor/three.module.js">
+<link rel="modulepreload" href="../plio/vendor/three.core.js">
+<link rel="modulepreload" href="../plio/plio-model.js">
 <script type="application/json" id="i18n">{"duo_note": "iPhone Duo open · one screen, folded in the middle", "duo_title": "The game above the fold, your pencil below.", "duo_step1": "The game appears on the top half, above the fold, with no gesture needed.", "duo_step2": "With your finger or a stylus, on the grid slate across the bottom half.", "phone_note": "iPhone · game on top, slate below", "phone_title": "The game on top, your pencil below.", "phone_step1": "The game appears at the top of the screen, with no gesture needed.", "phone_step2": "With your finger or a stylus, on the grid slate at the bottom, right under your thumb.", "pad_note": "iPad + Apple Pencil · game on the left, slate on the right", "pad_title": "The game on the left, your pencil on the right.", "pad_step1": "The game appears on the left side of the screen, with no gesture needed.", "pad_step2": "With your finger or a stylus, on the large slate on the right, with Apple Pencil.", "plio_cheer": "Good idea. I'll be waiting.", "plio_tickle": "That tickles."}</script>
 <script type="module" src="../plio/plio-3d.js"></script>
 <script type="module" src="../js/site.js"></script>
@@ -99,8 +96,8 @@
   </div>
   <div class="hero-stage">
     <div class="hero-disc" aria-hidden="true"></div>
-    <div class="bubble" id="bubble" aria-live="polite">Hi, I&#x27;m Plio. Shall we train?</div>
-    <plio-3d id="hero-plio" mood="content" size="360" follow anim="joie" title="Click Plio"></plio-3d>
+    <div class="bubble" id="bubble">Hi, I&#x27;m Plio. Shall we train?</div>
+    <plio-3d id="hero-plio" mood="content" size="360" follow anim="joie" title="Click Plio" label="Plio, a little pink brain, the Fold Brain mascot" fallback="../img/plio.webp"></plio-3d>
   </div>
 </section>
 
@@ -193,15 +190,15 @@
       <div class="steps">
         <div class="step">
           <div class="step-n">1</div>
-          <div><div class="step-t">Read the prompt</div><div class="step-d" id="step-1">The game appears on the top half, above the fold, with no gesture needed.</div></div>
+          <div><h3 class="step-t">Read the prompt</h3><div class="step-d" id="step-1">The game appears on the top half, above the fold, with no gesture needed.</div></div>
         </div>
         <div class="step">
           <div class="step-n">2</div>
-          <div><div class="step-t">Answer with your finger</div><div class="step-d" id="step-2">With your finger or a stylus, on the grid slate across the bottom half.</div></div>
+          <div><h3 class="step-t">Answer with your finger</h3><div class="step-d" id="step-2">With your finger or a stylus, on the grid slate across the bottom half.</div></div>
         </div>
         <div class="step">
           <div class="step-n">3</div>
-          <div><div class="step-t">Plio reacts</div><div class="step-d">Right, or not quite, with the correct answer. Then on to the next exercise.</div></div>
+          <div><h3 class="step-t">Plio reacts</h3><div class="step-d">Right, or not quite, with the correct answer. Then on to the next exercise.</div></div>
         </div>
       </div>
     </div>
@@ -339,7 +336,7 @@
       <a class="btn" data-store data-cheer href="#prix" style="margin-top:8px">Download on the App Store</a>
     </div>
     <div class="price-plio">
-      <plio-3d id="price-plio" mood="fier" size="280" follow></plio-3d>
+      <plio-3d id="price-plio" mood="fier" size="280" follow aria-hidden="true" fallback="../img/plio.webp"></plio-3d>
     </div>
   </div>
 </section>

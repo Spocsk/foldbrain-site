@@ -2,7 +2,7 @@
 
 Landing page de [Fold Brain](https://spocsk.github.io/foldbrain-site/), l'app d'entraînement cérébral pensée pour l'iPhone Duo.
 
-Site statique, sans build : HTML, CSS et un peu de JavaScript. Plio est rendu en 3D avec three.js (chargé depuis unpkg par l'import map de `index.html`).
+Site statique : HTML, CSS et un peu de JavaScript, générés par un petit script Python (voir plus bas). Plio est rendu en 3D avec three.js, hébergé avec le site dans `plio/vendor/` (three@0.184.0, aucun tiers chargé à part Google Fonts).
 
 Le site existe en 14 langues : français à la racine, les autres dans un dossier chacune (`en/`, `ja/`, `ar/`…). Les pages sont **générées** : ne pas éditer `index.html`, `privacy.html` ni les dossiers de langue à la main.
 

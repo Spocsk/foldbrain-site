@@ -61,14 +61,11 @@
 <link rel="stylesheet" href="../css/site.css">
 
 <script type="importmap">
-{
-  "imports": { "three": "https://unpkg.com/three@0.184.0/build/three.module.js" },
-  "integrity": {
-    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
-    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT"
-  }
-}
+{ "imports": { "three": "./../plio/vendor/three.module.js" } }
 </script>
+<link rel="modulepreload" href="../plio/vendor/three.module.js">
+<link rel="modulepreload" href="../plio/vendor/three.core.js">
+<link rel="modulepreload" href="../plio/plio-model.js">
 <script type="application/json" id="i18n">{"duo_note": "iPhone Duo terbuka · satu layar, terlipat di tengah", "duo_title": "Permainan di atas lipatan, pensilmu di bawah.", "duo_step1": "Permainan tampil di separuh atas, di atas lipatan, tanpa perlu gerakan apa pun.", "duo_step2": "Dengan jari atau stylus, di batu tulis berpetak pada separuh bawah.", "phone_note": "iPhone · permainan di atas, batu tulis di bawah", "phone_title": "Permainan di atas, pensilmu di bawah.", "phone_step1": "Permainan tampil di bagian atas layar, tanpa perlu gerakan apa pun.", "phone_step2": "Dengan jari atau stylus, di batu tulis berpetak di bawah, dengan ibu jari.", "pad_note": "iPad + Apple Pencil · permainan di kiri, batu tulis di kanan", "pad_title": "Permainan di kiri, pensilmu di kanan.", "pad_step1": "Permainan tampil di bagian kiri layar, tanpa perlu gerakan apa pun.", "pad_step2": "Dengan jari atau stylus, di batu tulis besar sebelah kanan, dengan Apple Pencil.", "plio_cheer": "Ide bagus. Aku tunggu ya.", "plio_tickle": "Geli!"}</script>
 <script type="module" src="../plio/plio-3d.js"></script>
 <script type="module" src="../js/site.js"></script>
@@ -99,8 +96,8 @@
   </div>
   <div class="hero-stage">
     <div class="hero-disc" aria-hidden="true"></div>
-    <div class="bubble" id="bubble" aria-live="polite">Hai, aku Plio. Latihan yuk?</div>
-    <plio-3d id="hero-plio" mood="content" size="360" follow anim="joie" title="Klik Plio"></plio-3d>
+    <div class="bubble" id="bubble">Hai, aku Plio. Latihan yuk?</div>
+    <plio-3d id="hero-plio" mood="content" size="360" follow anim="joie" title="Klik Plio" label="Plio, otak kecil berwarna merah muda, maskot Fold Brain" fallback="../img/plio.webp"></plio-3d>
   </div>
 </section>
 
@@ -193,15 +190,15 @@
       <div class="steps">
         <div class="step">
           <div class="step-n">1</div>
-          <div><div class="step-t">Baca soalnya</div><div class="step-d" id="step-1">Permainan tampil di separuh atas, di atas lipatan, tanpa perlu gerakan apa pun.</div></div>
+          <div><h3 class="step-t">Baca soalnya</h3><div class="step-d" id="step-1">Permainan tampil di separuh atas, di atas lipatan, tanpa perlu gerakan apa pun.</div></div>
         </div>
         <div class="step">
           <div class="step-n">2</div>
-          <div><div class="step-t">Jawab dengan jari</div><div class="step-d" id="step-2">Dengan jari atau stylus, di batu tulis berpetak pada separuh bawah.</div></div>
+          <div><h3 class="step-t">Jawab dengan jari</h3><div class="step-d" id="step-2">Dengan jari atau stylus, di batu tulis berpetak pada separuh bawah.</div></div>
         </div>
         <div class="step">
           <div class="step-n">3</div>
-          <div><div class="step-t">Plio bereaksi</div><div class="step-d">Benar, atau hampir, beserta jawaban yang tepat. Lalu latihan berikutnya.</div></div>
+          <div><h3 class="step-t">Plio bereaksi</h3><div class="step-d">Benar, atau hampir, beserta jawaban yang tepat. Lalu latihan berikutnya.</div></div>
         </div>
       </div>
     </div>
@@ -339,7 +336,7 @@
       <a class="btn" data-store data-cheer href="#prix" style="margin-top:8px">Unduh di App Store</a>
     </div>
     <div class="price-plio">
-      <plio-3d id="price-plio" mood="fier" size="280" follow></plio-3d>
+      <plio-3d id="price-plio" mood="fier" size="280" follow aria-hidden="true" fallback="../img/plio.webp"></plio-3d>
     </div>
   </div>
 </section>

@@ -61,14 +61,11 @@
 <link rel="stylesheet" href="../css/site.css">
 
 <script type="importmap">
-{
-  "imports": { "three": "https://unpkg.com/three@0.184.0/build/three.module.js" },
-  "integrity": {
-    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
-    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT"
-  }
-}
+{ "imports": { "three": "./../plio/vendor/three.module.js" } }
 </script>
+<link rel="modulepreload" href="../plio/vendor/three.module.js">
+<link rel="modulepreload" href="../plio/vendor/three.core.js">
+<link rel="modulepreload" href="../plio/plio-model.js">
 <script type="application/json" id="i18n">{"duo_note": "Открытый iPhone Duo · один экран, согнутый посередине", "duo_title": "Игра над сгибом, твой карандаш — под ним.", "duo_step1": "Игра появляется на верхней половине, над сгибом, без лишних жестов.", "duo_step2": "Пальцем или стилусом, на клетчатой дощечке нижней половины.", "phone_note": "iPhone · игра вверху, дощечка внизу", "phone_title": "Игра вверху, твой карандаш внизу.", "phone_step1": "Игра появляется вверху экрана, без лишних жестов.", "phone_step2": "Пальцем или стилусом, на клетчатой дощечке внизу, под большим пальцем.", "pad_note": "iPad + Apple Pencil · игра слева, дощечка справа", "pad_title": "Игра слева, твой карандаш справа.", "pad_step1": "Игра появляется в левой части экрана, без лишних жестов.", "pad_step2": "Пальцем или стилусом, на большой дощечке справа, с Apple Pencil.", "plio_cheer": "Отличная мысль. Я жду тебя.", "plio_tickle": "Щекотно!"}</script>
 <script type="module" src="../plio/plio-3d.js"></script>
 <script type="module" src="../js/site.js"></script>
@@ -99,8 +96,8 @@
   </div>
   <div class="hero-stage">
     <div class="hero-disc" aria-hidden="true"></div>
-    <div class="bubble" id="bubble" aria-live="polite">Привет, я Plio. Потренируемся?</div>
-    <plio-3d id="hero-plio" mood="content" size="360" follow anim="joie" title="Нажми на Plio"></plio-3d>
+    <div class="bubble" id="bubble">Привет, я Plio. Потренируемся?</div>
+    <plio-3d id="hero-plio" mood="content" size="360" follow anim="joie" title="Нажми на Plio" label="Plio, маленький розовый мозг, талисман Fold Brain" fallback="../img/plio.webp"></plio-3d>
   </div>
 </section>
 
@@ -193,15 +190,15 @@
       <div class="steps">
         <div class="step">
           <div class="step-n">1</div>
-          <div><div class="step-t">Прочитай задание</div><div class="step-d" id="step-1">Игра появляется на верхней половине, над сгибом, без лишних жестов.</div></div>
+          <div><h3 class="step-t">Прочитай задание</h3><div class="step-d" id="step-1">Игра появляется на верхней половине, над сгибом, без лишних жестов.</div></div>
         </div>
         <div class="step">
           <div class="step-n">2</div>
-          <div><div class="step-t">Отвечай пальцем</div><div class="step-d" id="step-2">Пальцем или стилусом, на клетчатой дощечке нижней половины.</div></div>
+          <div><h3 class="step-t">Отвечай пальцем</h3><div class="step-d" id="step-2">Пальцем или стилусом, на клетчатой дощечке нижней половины.</div></div>
         </div>
         <div class="step">
           <div class="step-n">3</div>
-          <div><div class="step-t">Plio реагирует</div><div class="step-d">Верно — или не совсем, и тогда с правильным ответом. Потом следующее упражнение.</div></div>
+          <div><h3 class="step-t">Plio реагирует</h3><div class="step-d">Верно — или не совсем, и тогда с правильным ответом. Потом следующее упражнение.</div></div>
         </div>
       </div>
     </div>
@@ -339,7 +336,7 @@
       <a class="btn" data-store data-cheer href="#prix" style="margin-top:8px">Загрузить в App Store</a>
     </div>
     <div class="price-plio">
-      <plio-3d id="price-plio" mood="fier" size="280" follow></plio-3d>
+      <plio-3d id="price-plio" mood="fier" size="280" follow aria-hidden="true" fallback="../img/plio.webp"></plio-3d>
     </div>
   </div>
 </section>

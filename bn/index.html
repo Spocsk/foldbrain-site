@@ -61,14 +61,11 @@
 <link rel="stylesheet" href="../css/site.css">
 
 <script type="importmap">
-{
-  "imports": { "three": "https://unpkg.com/three@0.184.0/build/three.module.js" },
-  "integrity": {
-    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
-    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT"
-  }
-}
+{ "imports": { "three": "./../plio/vendor/three.module.js" } }
 </script>
+<link rel="modulepreload" href="../plio/vendor/three.module.js">
+<link rel="modulepreload" href="../plio/vendor/three.core.js">
+<link rel="modulepreload" href="../plio/plio-model.js">
 <script type="application/json" id="i18n">{"duo_note": "খোলা iPhone Duo · একটাই স্ক্রিন, মাঝখানে ভাঁজ", "duo_title": "খেলা ভাঁজের ওপরে, তোমার পেনসিল নিচে।", "duo_step1": "খেলা ওপরের অর্ধেকে, ভাঁজের ওপরে দেখা যায়, কিছু করতে হয় না।", "duo_step2": "আঙুল বা স্টাইলাস দিয়ে, নিচের অর্ধেকের ছক কাটা স্লেটে।", "phone_note": "iPhone · খেলা ওপরে, স্লেট নিচে", "phone_title": "খেলা ওপরে, তোমার পেনসিল নিচে।", "phone_step1": "খেলা স্ক্রিনের ওপরে দেখা যায়, কিছু করতে হয় না।", "phone_step2": "আঙুল বা স্টাইলাস দিয়ে, নিচের ছক কাটা স্লেটে, বুড়ো আঙুলে।", "pad_note": "iPad + Apple Pencil · খেলা বাঁয়ে, স্লেট ডানে", "pad_title": "খেলা বাঁয়ে, তোমার পেনসিল ডানে।", "pad_step1": "খেলা স্ক্রিনের বাঁ দিকে দেখা যায়, কিছু করতে হয় না।", "pad_step2": "আঙুল বা স্টাইলাস দিয়ে, ডানের বড় স্লেটে, Apple Pencil দিয়ে।", "plio_cheer": "ভালো ভেবেছ। আমি অপেক্ষা করছি।", "plio_tickle": "সুড়সুড়ি লাগছে!"}</script>
 <script type="module" src="../plio/plio-3d.js"></script>
 <script type="module" src="../js/site.js"></script>
@@ -99,8 +96,8 @@
   </div>
   <div class="hero-stage">
     <div class="hero-disc" aria-hidden="true"></div>
-    <div class="bubble" id="bubble" aria-live="polite">হাই, আমি Plio। অনুশীলন করবে?</div>
-    <plio-3d id="hero-plio" mood="content" size="360" follow anim="joie" title="Plio-তে ক্লিক করো"></plio-3d>
+    <div class="bubble" id="bubble">হাই, আমি Plio। অনুশীলন করবে?</div>
+    <plio-3d id="hero-plio" mood="content" size="360" follow anim="joie" title="Plio-তে ক্লিক করো" label="Plio, একটি ছোট্ট গোলাপি মস্তিষ্ক, Fold Brain-এর মাসকট" fallback="../img/plio.webp"></plio-3d>
   </div>
 </section>
 
@@ -193,15 +190,15 @@
       <div class="steps">
         <div class="step">
           <div class="step-n">1</div>
-          <div><div class="step-t">প্রশ্ন পড়ো</div><div class="step-d" id="step-1">খেলা ওপরের অর্ধেকে, ভাঁজের ওপরে দেখা যায়, কিছু করতে হয় না।</div></div>
+          <div><h3 class="step-t">প্রশ্ন পড়ো</h3><div class="step-d" id="step-1">খেলা ওপরের অর্ধেকে, ভাঁজের ওপরে দেখা যায়, কিছু করতে হয় না।</div></div>
         </div>
         <div class="step">
           <div class="step-n">2</div>
-          <div><div class="step-t">আঙুল দিয়ে উত্তর দাও</div><div class="step-d" id="step-2">আঙুল বা স্টাইলাস দিয়ে, নিচের অর্ধেকের ছক কাটা স্লেটে।</div></div>
+          <div><h3 class="step-t">আঙুল দিয়ে উত্তর দাও</h3><div class="step-d" id="step-2">আঙুল বা স্টাইলাস দিয়ে, নিচের অর্ধেকের ছক কাটা স্লেটে।</div></div>
         </div>
         <div class="step">
           <div class="step-n">3</div>
-          <div><div class="step-t">Plio সাড়া দেয়</div><div class="step-d">ঠিক, নাকি একটু ভুল, সঙ্গে সঠিক উত্তর। তারপর পরের অনুশীলন।</div></div>
+          <div><h3 class="step-t">Plio সাড়া দেয়</h3><div class="step-d">ঠিক, নাকি একটু ভুল, সঙ্গে সঠিক উত্তর। তারপর পরের অনুশীলন।</div></div>
         </div>
       </div>
     </div>
@@ -339,7 +336,7 @@
       <a class="btn" data-store data-cheer href="#prix" style="margin-top:8px">App Store থেকে ডাউনলোড করো</a>
     </div>
     <div class="price-plio">
-      <plio-3d id="price-plio" mood="fier" size="280" follow></plio-3d>
+      <plio-3d id="price-plio" mood="fier" size="280" follow aria-hidden="true" fallback="../img/plio.webp"></plio-3d>
     </div>
   </div>
 </section>

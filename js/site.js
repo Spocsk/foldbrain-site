@@ -54,9 +54,18 @@ function say(text) {
   if (plio.say) plio.say(text);
 }
 for (const el of document.querySelectorAll('[data-cheer]')) {
-  el.addEventListener('mouseenter', () => { plio.play?.('joie'); say(T.plio_cheer); });
+  const cheer = () => { plio.play?.('joie'); say(T.plio_cheer); };
+  el.addEventListener('mouseenter', cheer);
+  el.addEventListener('focus', cheer);
 }
-plio.addEventListener('click', () => { plio.play?.('victoire'); say(T.plio_tickle); });
+// Plio se touche aussi au clavier (Entrée ou Espace).
+plio.setAttribute('role', 'button');
+plio.tabIndex = 0;
+const tickle = () => { plio.play?.('victoire'); say(T.plio_tickle); };
+plio.addEventListener('click', tickle);
+plio.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tickle(); }
+});
 
 // Plio du hero : pas plus large que l'écran sur téléphone.
 function fitPlio() {
