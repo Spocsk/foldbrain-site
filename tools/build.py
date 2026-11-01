@@ -6,9 +6,11 @@
 Le français est à la racine (index.html, privacy.html), les autres langues dans un dossier
 chacune (en/, ja/…). Les pages générées sont commitées : GitHub Pages les sert telles quelles.
 """
+import datetime
 import html
 import json
 import re
+import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -22,7 +24,7 @@ LANGS = [
     ('zh-Hant', 'zh-hant/', 'zh_TW', 'ltr'),
     ('hi', 'hi/', 'hi_IN', 'ltr'),
     ('es', 'es/', 'es_ES', 'ltr'),
-    ('ar', 'ar/', 'ar_AR', 'rtl'),
+    ('ar', 'ar/', 'ar_SA', 'rtl'),
     ('bn', 'bn/', 'bn_IN', 'ltr'),
     ('pt-BR', 'pt-br/', 'pt_BR', 'ltr'),
     ('ru', 'ru/', 'ru_RU', 'ltr'),
@@ -71,6 +73,55 @@ def attr(s):
     return html.escape(s, quote=True)
 
 
+def last_change():
+    """Date du dernier commit (lastmod du sitemap), aujourd'hui hors dépôt git."""
+    try:
+        return subprocess.run(['git', 'log', '-1', '--format=%cs'], cwd=ROOT, capture_output=True,
+                              text=True, check=True).stdout.strip() or str(datetime.date.today())
+    except (OSError, subprocess.CalledProcessError):
+        return str(datetime.date.today())
+
+
+def head_meta(t, code, og, page, canonical, depth, alternates):
+    """Balises communes : canonical, hreflang, Open Graph, carte Twitter, icônes, données structurées."""
+    if page == 'index.html':
+        title, desc = t['og_title'], t['og_description']
+    else:
+        title, desc = t['privacy_meta_title'], t['privacy_meta_description']
+    image = BASE + 'img/og.png'
+    others = '\n'.join(f'<meta property="og:locale:alternate" content="{o}">' for c, _, o, _ in LANGS if c != code)
+    tags = f"""<link rel="canonical" href="{canonical}">
+{alternates}
+<meta property="og:site_name" content="Fold Brain">
+<meta property="og:title" content="{attr(title)}">
+<meta property="og:description" content="{attr(desc)}">
+<meta property="og:image" content="{image}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{attr(t['og_image_alt'])}">
+<meta property="og:url" content="{canonical}">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="{og}">
+{others}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{attr(title)}">
+<meta name="twitter:description" content="{attr(desc)}">
+<meta name="twitter:image" content="{image}">
+<link rel="icon" href="{depth}img/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="{depth}img/apple-touch-icon.png">"""
+    if page == 'index.html':
+        app = {
+            '@context': 'https://schema.org', '@type': 'MobileApplication', 'name': 'Fold Brain',
+            'operatingSystem': 'iOS', 'applicationCategory': 'EducationalApplication',
+            'inLanguage': code, 'url': canonical, 'image': image, 'description': t['meta_description'],
+            'author': {'@type': 'Person', 'name': 'Dylan Couto de Oliveira'},
+            # Téléchargement gratuit, achat intégré ensuite : pas de prix figé ici (il varie selon le pays).
+            'offers': {'@type': 'Offer', 'price': '0', 'priceCurrency': 'EUR', 'description': t['cta_note']},
+        }
+        tags += '\n<script type="application/ld+json">' + json.dumps(app, ensure_ascii=False).replace('</', '<\\/') + '</script>'
+    return tags
+
+
 def render(template, t, code, folder, og, direction, page, strings):
     depth = '../' if folder else ''
     canonical = BASE + folder + PAGES[page]
@@ -106,6 +157,7 @@ for (const a of document.querySelectorAll('[data-lang]')) {{
     paths = {c: f for c, f, _, _ in LANGS if f}
     values = {
         'lang': code, 'dir': direction, 'root': depth, 'canonical': canonical, 'og_locale': og,
+        'head_meta': head_meta(t, code, og, page, canonical, depth, '\n'.join(alternates)),
         'alternates': '\n'.join(alternates), 'footer': footer, 'days': days,
         # Captures de l'app : en français sur la page française, en anglais ailleurs.
         'shots': 'fr' if code == 'fr' else 'en',
@@ -148,16 +200,68 @@ def main():
             out.parent.mkdir(exist_ok=True)
             out.write_text(render(template, strings[code], code, folder, og, direction, page, strings), encoding='utf-8')
 
-    urls = []
+    urls, lastmod = [], last_change()
     for page, path in PAGES.items():
+        alts = ''.join(f'\n    <xhtml:link rel="alternate" hreflang="{c}" href="{BASE}{f}{path}"/>' for c, f, _, _ in LANGS)
+        alts += f'\n    <xhtml:link rel="alternate" hreflang="x-default" href="{BASE}en/{path}"/>'
         for _, folder, _, _ in LANGS:
-            alts = ''.join(f'\n    <xhtml:link rel="alternate" hreflang="{c}" href="{BASE}{f}{path}"/>' for c, f, _, _ in LANGS)
-            urls.append(f'  <url>\n    <loc>{BASE}{folder}{path}</loc>{alts}\n  </url>')
+            urls.append(f'  <url>\n    <loc>{BASE}{folder}{path}</loc>\n    <lastmod>{lastmod}</lastmod>{alts}\n  </url>')
     (ROOT / 'sitemap.xml').write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
         + '\n'.join(urls) + '\n</urlset>\n', encoding='utf-8')
-    print(f'{len(LANGS)} langues, {len(LANGS) * len(PAGES)} pages, sitemap.xml')
+    (ROOT / 'robots.txt').write_text(f'User-agent: *\nAllow: /\n\nSitemap: {BASE}sitemap.xml\n', encoding='utf-8')
+
+    # 404 de GitHub Pages : une seule page, servie à toutes les profondeurs (chemins absolus).
+    # Le texte suit la langue du dossier demandé, sinon celle du navigateur, sinon l'anglais.
+    nf = {c: {'title': strings[c]['nf_title'], 'text': strings[c]['nf_text'], 'home': strings[c]['nf_home'],
+              'href': '/foldbrain-site/' + f, 'dir': d} for c, f, _, d in LANGS}
+    folders = {f.rstrip('/'): c for c, f, _, _ in LANGS if f}
+    en = strings['en']
+    links = ' '.join(f'<a href="/foldbrain-site/{f}" hreflang="{c}" lang="{c}">{html.escape(strings[c]["_name"])}</a>' for c, f, _, _ in LANGS)
+    (ROOT / '404.html').write_text(f"""<!doctype html>
+<!-- Page générée par tools/build.py : ne pas éditer à la main. -->
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>{attr(en['nf_title'])} — Fold Brain</title>
+<link rel="icon" href="/foldbrain-site/img/icon-32.png" sizes="32x32" type="image/png">
+<link rel="stylesheet" href="/foldbrain-site/css/tokens.css">
+<link rel="stylesheet" href="/foldbrain-site/css/site.css">
+</head>
+<body>
+<header class="wrap nav">
+  <a class="brand" href="/foldbrain-site/"><img src="/foldbrain-site/img/logo-72.webp" alt="" width="36" height="36">Fold Brain</a>
+</header>
+<main class="wrap doc notfound">
+  <h1 id="nf-title">{html.escape(en['nf_title'])}</h1>
+  <p id="nf-text">{html.escape(en['nf_text'])}</p>
+  <p><a class="btn" id="nf-home" href="/foldbrain-site/en/">{html.escape(en['nf_home'])}</a></p>
+  <nav class="langs" aria-label="{attr(en['language'])}">{links}</nav>
+</main>
+<script>
+(function () {{
+  var nf = {json.dumps(nf, ensure_ascii=False).replace('</', '<\\/')}, folders = {json.dumps(folders)};
+  var seg = location.pathname.split('/')[2] || '', code = folders[seg];
+  if (!code) {{
+    var tag = String((navigator.languages || [navigator.language || 'en'])[0]).toLowerCase();
+    code = /^zh-(tw|hk|mo|hant)/.test(tag) ? 'zh-Hant' : /^zh/.test(tag) ? 'zh-Hans' : /^pt/.test(tag) ? 'pt-BR' : tag.split('-')[0];
+  }}
+  var t = nf[code] || nf.en;
+  document.documentElement.lang = code in nf ? code : 'en';
+  document.documentElement.dir = t.dir;
+  document.title = t.title + ' — Fold Brain';
+  document.getElementById('nf-title').textContent = t.title;
+  document.getElementById('nf-text').textContent = t.text;
+  var home = document.getElementById('nf-home'); home.textContent = t.home; home.href = t.href;
+}})();
+</script>
+</body>
+</html>
+""", encoding='utf-8')
+    print(f'{len(LANGS)} langues, {len(LANGS) * len(PAGES)} pages, sitemap.xml, robots.txt, 404.html')
 
 
 if __name__ == '__main__':
