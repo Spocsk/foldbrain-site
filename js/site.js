@@ -1,7 +1,8 @@
 // Interactions de la landing : onglets d'appareils, bulle et réactions de Plio, lien App Store.
 
-/** Lien de la fiche App Store. Tant que l'app n'est pas publiée, les boutons mènent au prix. */
-const APP_STORE_URL = 'https://apps.apple.com/app/id6828494656';
+/** Lien de la fiche App Store (https://apps.apple.com/app/id6828494656), à remplir à la publication.
+ *  Vide : les boutons mènent au prix et la mention « Bientôt sur l'App Store » s'affiche. */
+const APP_STORE_URL = '';
 
 /** Textes de la page dans sa langue, posés par tools/build.py dans <script id="i18n">. */
 const T = JSON.parse(document.getElementById('i18n').textContent);
@@ -68,4 +69,5 @@ window.addEventListener('resize', fitPlio);
 // ── Lien App Store ──
 if (APP_STORE_URL) {
   for (const a of document.querySelectorAll('[data-store]')) a.href = APP_STORE_URL;
+  for (const el of document.querySelectorAll('[data-soon]')) el.hidden = true;
 }

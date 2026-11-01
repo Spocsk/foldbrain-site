@@ -63,11 +63,12 @@ REDIRECT = """<script>
 
 
 def load(code):
-    return json.loads((ROOT / 'i18n' / f'{code}.json').read_text())
+    return json.loads((ROOT / 'i18n' / f'{code}.json').read_text(encoding='utf-8'))
 
 
 def attr(s):
-    return s.replace('"', '&quot;')
+    """Texte traduit dans un attribut ou un nœud texte : tout est échappé (un traducteur ne casse pas la page)."""
+    return html.escape(s, quote=True)
 
 
 def render(template, t, code, folder, og, direction, page, strings):
@@ -111,32 +112,39 @@ for (const a of document.querySelectorAll('[data-lang]')) {{
     }
 
     def fill(m):
-        name = m.group(1)
+        name, raw = m.group(1), m.group(2) == '|html'
         if name.startswith('t.'):
             key = name[2:]
             if key not in t:
                 raise KeyError(f'{code}: clé manquante {key}')
-            return attr(t[key])
+            # `{{t.clé|html}}` : texte qui contient volontairement des liens (politique de confidentialité).
+            return t[key] if raw else attr(t[key])
         return values[name]
 
-    return re.sub(r'\{\{([\w.]+)\}\}', fill, template)
+    out = re.sub(r'\{\{([\w.]+)(\|html)?\}\}', fill, template)
+    left = re.findall(r'\{\{[^}]*\}\}', out)
+    if left:
+        raise SystemExit(f'{code}/{page}: balises non remplacées {left}')
+    return out
 
 
 def main():
     strings = {c: load(c) for c, _, _, _ in LANGS}
     reference = set(strings['fr'])
     for c, s in strings.items():
-        missing = reference - set(s)
+        missing, extra = reference - set(s), set(s) - reference
         if missing:
             raise SystemExit(f'{c}: clés manquantes {sorted(missing)}')
+        if extra:
+            raise SystemExit(f'{c}: clés absentes du français {sorted(extra)}')
     for page in PAGES:
-        template = (ROOT / 'src' / page).read_text()
+        template = (ROOT / 'src' / page).read_text(encoding='utf-8')
         template = template.replace('<!-- Gabarit : ne pas éditer les pages générées, mais ce fichier et i18n/*.json, puis lancer tools/build.py. -->\n',
                                     '<!-- Page générée par tools/build.py depuis src/ et i18n/ : ne pas éditer à la main. -->\n')
         for code, folder, og, direction in LANGS:
             out = ROOT / folder / page
             out.parent.mkdir(exist_ok=True)
-            out.write_text(render(template, strings[code], code, folder, og, direction, page, strings))
+            out.write_text(render(template, strings[code], code, folder, og, direction, page, strings), encoding='utf-8')
 
     urls = []
     for page, path in PAGES.items():
@@ -146,7 +154,7 @@ def main():
     (ROOT / 'sitemap.xml').write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
-        + '\n'.join(urls) + '\n</urlset>\n')
+        + '\n'.join(urls) + '\n</urlset>\n', encoding='utf-8')
     print(f'{len(LANGS)} langues, {len(LANGS) * len(PAGES)} pages, sitemap.xml')
 
 
