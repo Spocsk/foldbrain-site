@@ -241,3 +241,6 @@ img { max-width: 100%; }
 :lang(ar), :lang(ur), :lang(hi), :lang(bn) { --tracking-tight: 0; --tracking-caps: 0; }
 :lang(ar) .hero h1, :lang(ur) .hero h1, :lang(hi) .hero h1, :lang(bn) .hero h1 { line-height: 1.3; }
 :lang(ar) .h2, :lang(ur) .h2, :lang(hi) .h2, :lang(bn) .h2 { line-height: 1.35; }
+
+/* Coréen : on coupe entre les mots, pas au milieu. */
+html[lang="ko"] body { word-break: keep-all; }

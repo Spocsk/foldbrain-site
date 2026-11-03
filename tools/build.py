@@ -32,6 +32,10 @@ LANGS = [
     ('ur', 'ur/', 'ur_PK', 'rtl'),
     ('de', 'de/', 'de_DE', 'ltr'),
     ('ja', 'ja/', 'ja_JP', 'ltr'),
+    ('tr', 'tr/', 'tr_TR', 'ltr'),
+    ('vi', 'vi/', 'vi_VN', 'ltr'),
+    ('ko', 'ko/', 'ko_KR', 'ltr'),
+    ('it', 'it/', 'it_IT', 'ltr'),
 ]
 PAGES = {'index.html': '', 'privacy.html': 'privacy.html'}
 # Jours de l'illustration, du lundi au dimanche : joué, parfait, joué, joué, pas joué, joué, aujourd'hui.
@@ -43,7 +47,7 @@ SCRIPT_KEYS = ['duo_note', 'duo_title', 'duo_step1', 'duo_step2', 'phone_note', 
 # Racine en français : premier passage sans choix enregistré, on suit la langue du navigateur.
 REDIRECT = """<script>
 (function () {
-  var paths = %s;
+  var paths = __PATHS__, page = __PAGE__;
   try {
     if (/bot|crawl|spider|slurp/i.test(navigator.userAgent)) return;
     var choice = localStorage.getItem('fb-lang');
@@ -58,7 +62,7 @@ REDIRECT = """<script>
       }
       choice = choice || 'en';
     }
-    if (choice !== 'fr' && paths[choice]) location.replace(paths[choice] + location.hash);
+    if (choice !== 'fr' && paths[choice]) location.replace(paths[choice] + page + location.hash);
   } catch (e) {}
 })();
 </script>"""
@@ -161,7 +165,7 @@ for (const a of document.querySelectorAll('[data-lang]')) {{
         'alternates': '\n'.join(alternates), 'footer': footer, 'days': days,
         # Captures de l'app : en français sur la page française, en anglais ailleurs.
         'shots': 'fr' if code == 'fr' else 'en',
-        'redirect': REDIRECT % json.dumps(paths) if (code == 'fr' and page == 'index.html') else '',
+        'redirect': REDIRECT.replace('__PATHS__', json.dumps(paths)).replace('__PAGE__', json.dumps(PAGES[page])) if code == 'fr' else '',
         'script_json': json.dumps({k: t[k] for k in SCRIPT_KEYS}, ensure_ascii=False).replace('</', '<\\/'),
     }
 
